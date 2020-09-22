@@ -50,6 +50,7 @@ public class EmpleadoView extends Composite {
 	Ferreteria ferreteria = crudEmpleadoViewController.getFerreteria();
 	ModelFactoryController model = new ModelFactoryController();
 
+	//Tamaño composite 938x587
 	private DataBindingContext dataBindingContext = null;
 	private Table table;
 	private Text textNombreEmpleado;

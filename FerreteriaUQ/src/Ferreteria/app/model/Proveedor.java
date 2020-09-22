@@ -18,6 +18,10 @@ public class Proveedor implements Serializable {
 		this.direccionProveedor = direccionProveedor;
 	}
 
+	public Proveedor() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public String getNombreProveedor() {
 		return nombreProveedor;
 	}

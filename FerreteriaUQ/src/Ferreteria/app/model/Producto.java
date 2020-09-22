@@ -20,6 +20,10 @@ public class Producto implements Serializable {
 		this.marca = marca;
 	}
 
+	public Producto() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public String getNombreProducto() {
 		return nombreProducto;
 	}
