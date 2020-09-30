@@ -24,7 +24,7 @@ public class Compra implements Serializable {
 	public int getCodigoCompra() {
 		return codigoCompra;
 	}
-
+//github
 	public void setCodigoCompra(int codigoCompra) {
 		this.codigoCompra = codigoCompra;
 	}
