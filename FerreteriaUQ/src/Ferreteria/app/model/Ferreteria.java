@@ -167,7 +167,7 @@ public class Ferreteria implements Serializable, IFerreteria {
 		Proveedor proveedor = obtenerProveedor(codigoProveedor);
 
 		if (proveedor != null) {
-			listaEmpleados.remove(proveedor);
+			listaProveedor.remove(proveedor);
 			Eliminado = true;
 		}
 		return Eliminado;

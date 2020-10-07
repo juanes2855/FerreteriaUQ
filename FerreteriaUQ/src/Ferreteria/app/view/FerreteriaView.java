@@ -50,11 +50,11 @@ public class FerreteriaView extends ApplicationWindow {
 		ProductoView productoViewComposite = new ProductoView(tabFolder, SWT.NONE);
 		tbtmProducto.setControl(productoViewComposite);
 		
-		/*TabItem tbtmProveedor = new TabItem(tabFolder, SWT.NONE);
+		TabItem tbtmProveedor = new TabItem(tabFolder, SWT.NONE);
 		tbtmProveedor.setText("Proveedor");
 		
-		Composite composite_1 = new Composite(tabFolder, SWT.NONE);
-		tbtmProveedor.setControl(composite_1);*/
+		ProveedorView proveedorViewComposite = new ProveedorView(tabFolder, SWT.NONE);
+		tbtmProveedor.setControl(proveedorViewComposite);
 
 		return container;
 	}

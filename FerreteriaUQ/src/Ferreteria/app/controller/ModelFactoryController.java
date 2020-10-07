@@ -47,6 +47,7 @@ public class ModelFactoryController {
 		proveedor.setDireccionProveedor("Cali");
 		proveedor.setNombreProveedor("Cat");
 		proveedor.setTelefonoProveedor(7463333);
+		ferreteria.getListaProveedor().add(proveedor);
 
 	}
 
