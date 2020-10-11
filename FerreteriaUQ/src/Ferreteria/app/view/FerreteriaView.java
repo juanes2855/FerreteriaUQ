@@ -55,6 +55,12 @@ public class FerreteriaView extends ApplicationWindow {
 		
 		ProveedorView proveedorViewComposite = new ProveedorView(tabFolder, SWT.NONE);
 		tbtmProveedor.setControl(proveedorViewComposite);
+		
+		TabItem tbtmCompra = new TabItem(tabFolder, SWT.NONE);
+		tbtmCompra.setText("Compras");
+		
+		CompraView compraViewComposite = new CompraView(tabFolder, SWT.NONE);
+		tbtmCompra.setControl(compraViewComposite);
 
 		return container;
 	}

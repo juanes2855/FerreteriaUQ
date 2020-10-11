@@ -1,7 +1,9 @@
 package Ferreteria.app.controller;
 
 import Ferreteria.app.Excepciones.yaExiste;
+import Ferreteria.app.model.Compra;
 import Ferreteria.app.model.Empleado;
+import Ferreteria.app.model.Factura_Compra;
 import Ferreteria.app.model.Ferreteria;
 import Ferreteria.app.model.Producto;
 import Ferreteria.app.model.Proveedor;
@@ -48,6 +50,14 @@ public class ModelFactoryController {
 		proveedor.setNombreProveedor("Cat");
 		proveedor.setTelefonoProveedor(7463333);
 		ferreteria.getListaProveedor().add(proveedor);
+		
+		Producto producto2 = new Producto();
+		producto2.setNombreProducto("Llave");
+		producto2.setCategoria("De mano");
+		producto2.setCodigoProducto(1123);
+		producto2.setPrecio(47000);
+		producto2.setMarca("cat");
+		ferreteria.getListaProductos().add(producto2);
 
 	}
 
@@ -114,5 +124,14 @@ public class ModelFactoryController {
 	public Proveedor obtenerProveedor(int codigoProveedor){
 		return getFerreteria().obtenerProveedor(codigoProveedor);
 	}
-
+	public  void crearCompra(Compra compraNueva) throws yaExiste{
+		getFerreteria().crearCompra(compraNueva);
+	}
+	public void modificarCompra(int codigoCompra, String fechaCompra, int cantidadCompra,
+			Factura_Compra facturaCompra){
+		getFerreteria().modificarCompra(codigoCompra, fechaCompra, cantidadCompra, facturaCompra);
+	}
+	public Boolean eliminarCompra(int codigoCompra){
+		return getFerreteria().eliminarCompra(codigoCompra);
+	}
 }

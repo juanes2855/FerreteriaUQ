@@ -14,6 +14,8 @@ public class Ferreteria implements Serializable, IFerreteria {
 	private ArrayList<Empleado> listaEmpleados;
 	private ArrayList<Producto> listaProductos;
 	private ArrayList<Proveedor> listaProveedor;
+	private ArrayList<Compra> listaCompras;
+	private ArrayList<Factura_Compra> listaFacturas;
 
 	public Ferreteria(String nombreFerreteria, String direccionFerreteria, int telefonoFerreteria) {
 		super();
@@ -23,6 +25,8 @@ public class Ferreteria implements Serializable, IFerreteria {
 		listaEmpleados = new ArrayList<Empleado>();
 		listaProductos = new ArrayList<Producto>();
 		listaProveedor = new ArrayList<Proveedor>();
+		listaCompras= new ArrayList<Compra>();
+		listaFacturas= new ArrayList<Factura_Compra>();
 	}
 
 	public Ferreteria() {
@@ -40,7 +44,7 @@ public class Ferreteria implements Serializable, IFerreteria {
 		}
 
 	}
-
+    @Override
 	public void actualizarEmpleado(String nombreEmpleado, String cargo, int codigoEmpleado, String direccion,
 			double salario) {
 
@@ -184,6 +188,55 @@ public class Ferreteria implements Serializable, IFerreteria {
 		}
 		return proveedorE;
 	}
+	@Override
+	public void modificarCompra(int codigoCompra, String fechaCompra, int cantidadCompra,
+			Factura_Compra facturaCompra) {
+	
+	  Compra compra = obtenerCompra(codigoCompra);
+	  
+	  if(compra != null){
+		  compra.setCantidadCompra(cantidadCompra);
+		  compra.setCodigoCompra(codigoCompra);
+		  compra.setFactura_Compra(facturaCompra);
+		  compra.setFechaCompra(fechaCompra);
+	  }
+		
+	}
+	@Override
+	public Boolean eliminarCompra(int codigoCompra){
+		Boolean Eliminado= false;
+		Compra Compra = obtenerCompra(codigoCompra);
+		
+		if(Compra!= null){
+			listaCompras.remove(Compra);
+			Eliminado= true;
+		}
+		return Eliminado;
+	}
+	@Override
+	public void crearCompra(Compra compraNueva) throws yaExiste{
+		Compra compra= obtenerCompra(compraNueva.getCodigoCompra());
+		
+		if(compra != null){
+			throw new yaExiste("Ya existe esta compra");
+		}else{
+			getListaCompras().add(compraNueva);
+			getListaFacturas().add(compraNueva.getFactura_Compra());
+		}
+	}
+	
+	public Compra obtenerCompra(int codigoCompra){
+		Compra compraE= null;
+		
+		for (Compra compra : listaCompras) {
+			if(compra.getCodigoCompra()==codigoCompra){
+				compraE = compra;
+				break;
+			}
+		}
+		return compraE;
+	}
+	
 
 	public String getNombreFerreteria() {
 		return nombreFerreteria;
@@ -231,6 +284,22 @@ public class Ferreteria implements Serializable, IFerreteria {
 
 	public void setListaProveedor(ArrayList<Proveedor> listaProveedor) {
 		this.listaProveedor = listaProveedor;
+	}
+
+	public ArrayList<Compra> getListaCompras() {
+		return listaCompras;
+	}
+
+	public void setListaCompras(ArrayList<Compra> listaCompras) {
+		this.listaCompras = listaCompras;
+	}
+
+	public ArrayList<Factura_Compra> getListaFacturas() {
+		return listaFacturas;
+	}
+
+	public void setListaFacturas(ArrayList<Factura_Compra> listaFacturas) {
+		this.listaFacturas = listaFacturas;
 	}
 
 }

@@ -10,6 +10,7 @@ public class Producto implements Serializable {
 	private double precio;
 	private String categoria;
 	private String marca;
+	private Proveedor proveedorAsociado;
 
 	public Producto(String nombreProducto, int codigoProducto, double precio, String categoria, String marca) {
 		super();
@@ -62,6 +63,14 @@ public class Producto implements Serializable {
 
 	public void setMarca(String marca) {
 		this.marca = marca;
+	}
+
+	public Proveedor getProveedorAsociado() {
+		return proveedorAsociado;
+	}
+
+	public void setProveedorAsociado(Proveedor proveedorAsociado) {
+		this.proveedorAsociado = proveedorAsociado;
 	}
 
 }

@@ -25,9 +25,6 @@ public class Detalle_Inventario {
 
 	public void setProducto(Producto producto) {
 		this.producto = producto;
-	}
-	
-	
-	
+	}	
 
 }

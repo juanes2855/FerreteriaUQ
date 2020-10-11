@@ -46,7 +46,6 @@ import org.eclipse.jface.viewers.ComboViewer;
 public class EmpleadoView extends Composite {
 
 	CrudEmpleadoViewController crudEmpleadoViewController = new CrudEmpleadoViewController();
-    //aqui
 	Ferreteria ferreteria = crudEmpleadoViewController.getFerreteria();
 	ModelFactoryController model = new ModelFactoryController();
 

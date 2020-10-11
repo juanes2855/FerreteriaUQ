@@ -8,16 +8,22 @@ public class Compra implements Serializable {
 	private int codigoCompra;
 	private String fechaCompra;
 	private int cantidadCompra;
-	private int tipoPago;
 	private Factura_Compra factura_Compra;
+	private Empleado empleadoAsociado;
+	private Proveedor proveedorAsociado;
+	
+	private String nombreEmpleado;
+	private int codigoEmpleado;
+	private String nombreProveedor;
+	private int codigoProveedor;
+	
 
-	public Compra(int codigoCompra, String fechaCompra, int cantidadCompra, int tipoPago,
+	public Compra(int codigoCompra, String fechaCompra, int cantidadCompra,
 			Factura_Compra factura_Compra) {
 		super();
 		this.codigoCompra = codigoCompra;
 		this.fechaCompra = fechaCompra;
 		this.cantidadCompra = cantidadCompra;
-		this.tipoPago = tipoPago;
 		this.factura_Compra = factura_Compra;
 	}
 
@@ -45,20 +51,60 @@ public class Compra implements Serializable {
 		this.cantidadCompra = cantidadCompra;
 	}
 
-	public int getTipoPago() {
-		return tipoPago;
-	}
-
-	public void setTipoPago(int tipoPago) {
-		this.tipoPago = tipoPago;
-	}
-
 	public Factura_Compra getFactura_Compra() {
 		return factura_Compra;
 	}
 
 	public void setFactura_Compra(Factura_Compra factura_Compra) {
 		this.factura_Compra = factura_Compra;
+	}
+
+	public Empleado getEmpleadoAsociado() {
+		return empleadoAsociado;
+	}
+
+	public void setEmpleadoAsociado(Empleado empleadoAsociado) {
+		this.empleadoAsociado = empleadoAsociado;
+	}
+
+	public Proveedor getProveedorAsociado() {
+		return proveedorAsociado;
+	}
+
+	public void setProveedorAsociado(Proveedor proveedorAsociado) {
+		this.proveedorAsociado = proveedorAsociado;
+	}
+
+	public String getNombreEmpleado() {
+		return nombreEmpleado;
+	}
+
+	public void setNombreEmpleado(String nombreEmpleado) {
+		this.nombreEmpleado = nombreEmpleado;
+	}
+
+	public int getCodigoEmpleado() {
+		return codigoEmpleado;
+	}
+
+	public void setCodigoEmpleado(int codigoEmpleado) {
+		this.codigoEmpleado = codigoEmpleado;
+	}
+
+	public String getNombreProveedor() {
+		return nombreProveedor;
+	}
+
+	public void setNombreProveedor(String nombreProveedor) {
+		this.nombreProveedor = nombreProveedor;
+	}
+
+	public int getCodigoProveedor() {
+		return codigoProveedor;
+	}
+
+	public void setCodigoProveedor(int codigoProveedor) {
+		this.codigoProveedor = codigoProveedor;
 	}
 
 }
