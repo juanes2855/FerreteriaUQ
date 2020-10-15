@@ -13,34 +13,34 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import co.edu.uniquindio.banco.exceptions.UsuarioExcepcion;
-import co.edu.uniquindio.banco.model.Banco;
-import co.edu.uniquindio.banco.model.Cliente;
-import co.edu.uniquindio.banco.model.Usuario;
-
+import Ferreteria.app.Excepciones.UsuarioExcepcion;
+import Ferreteria.app.model.Ferreteria;
+import Ferreteria.app.model.Producto;
+import Ferreteria.app.model.Proveedor;
+import Ferreteria.app.model.Usuario;
 
 
 public class Persistencia {
 
-	public static final String RUTA_ARCHIVO_CLIENTES = "src/resources/archivoClientes.txt";
-	public static final String RUTA_ARCHIVO_USUARIOS = "src/resources/archivoUsuarios.txt";
+	public static final String RUTA_ARCHIVO_PROVEEDORES = "src/resources/archivoClientes.txt";
+	public static final String RUTA_ARCHIVO_COMPRAS = "src/resources/archivoUsuarios.txt";
 	public static final String RUTA_ARCHIVO_LOG = "src/resources/BancoLog.txt";
-	public static final String RUTA_ARCHIVO_OBJETOS = "src/resources/archivoEmpleados.txt";
-	
-	public static final String RUTA_ARCHIVO_MODELO_BANCO_BINARIO = "src/resources/model.dat";
-	public static final String RUTA_ARCHIVO_MODELO_BANCO_XML = "src/resources/model.xml";
+	public static final String RUTA_ARCHIVO_USUARIOS = "src/resources/archivoEmpleados.txt";
+	public static final String RUTA_ARCHIVO_PRODUCTOS= "src/resources/archivoProductos.txt";
+	public static final String RUTA_ARCHIVO_MODELO_FERRETERIA_BINARIO = "src/resources/model.dat";
+	public static final String RUTA_ARCHIVO_MODELO_FERRETERIA_XML = "src/resources/model.xml";
 
 
 	
 	
-	public static void cargarDatosArchivos(Banco banco) throws FileNotFoundException, IOException {
+	public static void cargarDatosArchivos(Ferreteria ferreteria) throws FileNotFoundException, IOException {
 		
 		
-		//cargar archivo de clientes
-		ArrayList<Cliente> clientesCargados = cargarClientes();
+		//cargar archivo de proveedores
+		ArrayList<Proveedor> proveedoresCargados = cargarProveedores();
 		
-		if(clientesCargados.size() > 0)
-			banco.getListaClientes().addAll(clientesCargados);
+		if(proveedoresCargados.size() > 0)
+			ferreteria.getListaProveedor().addAll(proveedoresCargados);
 		
 		
 //		guardarRecursoBancoEnBinario(banco);
@@ -61,16 +61,16 @@ public class Persistencia {
 	 * @param ruta
 	 * @throws IOException
 	 */
-	public static void guardarClientes(ArrayList<Cliente> listaClientes) throws IOException {
+	public static void guardarProveedores(ArrayList<Proveedor> listaProveedores) throws IOException {
 		// TODO Auto-generated method stub
 		String contenido = "";
 		
-		for(Cliente cliente:listaClientes) 
+		for(Proveedor proveedor:listaProveedores) 
 		{
-			contenido+= cliente.getNombre()+","+cliente.getApellido()+","+cliente.getCedula()+","+cliente.getDireccion()
-		     +","+cliente.getCorreo()+","+cliente.getFechaNacimiento()+","+cliente.getTelefono()+"\n";
+			contenido+= proveedor.getNombreProveedor()+","+proveedor.getCodigoProveedor()+","+proveedor.getDireccionProveedor()+","+proveedor.getDireccionProveedor()
+		     +","+proveedor.getTelefonoProveedor()+"\n";
 		}
-		ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_CLIENTES, contenido, false);
+		ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PROVEEDORES, contenido, false);
 		
 	}
 	
@@ -86,27 +86,24 @@ public class Persistencia {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static ArrayList<Cliente> cargarClientes() throws FileNotFoundException, IOException 
+	public static ArrayList<Proveedor> cargarProveedores() throws FileNotFoundException, IOException 
 	{
-		ArrayList<Cliente> clientes =new ArrayList<Cliente>();
+		ArrayList<Proveedor> proveedores =new ArrayList<Proveedor>();
 		
-		ArrayList<String> contenido = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_CLIENTES);
+		ArrayList<String> contenido = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_PROVEEDORES);
 		String linea="";
 		
 		for (int i = 0; i < contenido.size(); i++)
 		{
 			linea = contenido.get(i);
-			Cliente cliente = new Cliente();
-			cliente.setNombre(linea.split(",")[0]);
-			cliente.setApellido(linea.split(",")[1]);
-			cliente.setCedula(linea.split(",")[2]);
-			cliente.setDireccion(linea.split(",")[3]);
-			cliente.setCorreo(linea.split(",")[4]);
-			cliente.setFechaNacimiento(linea.split(",")[5]);
-			cliente.setTelefono(linea.split(",")[6]);
-			clientes.add(cliente);
+			Proveedor proveedor = new Proveedor();
+			proveedor.setNombreProveedor(linea.split(",")[0]);
+			proveedor.setCodigoProveedor(Integer.parseInt((linea.split(",")[1])));
+			proveedor.setDireccionProveedor(linea.split(",")[2]);
+			proveedor.setTelefonoProveedor(Integer.parseInt((linea.split(",")[3])));
+			proveedores.add(proveedor);
 		}
-		return clientes;
+		return proveedores;
 	}
 
 
@@ -163,82 +160,75 @@ public class Persistencia {
 //	----------------------SAVES------------------------
 	
 	/**
-	 * Guarda en un archivo de texto todos la información de las personas almacenadas en el ArrayList
+	 * Guarda en un archivo de texto todos la información de los productos almacenados en el ArrayList
 	 * @param objetos
 	 * @param ruta
 	 * @throws IOException
 	 */
 	
-	public static void guardarObjetos(ArrayList<Cliente> listaClientes, String ruta) throws IOException  {
+	public static void guardarProductos(ArrayList<Producto> listaProductos, String ruta) throws IOException  {
 		String contenido = "";
 		
-		for(Cliente clienteAux:listaClientes) {
-			contenido+= clienteAux.getNombre()+","+clienteAux.getApellido()+","+clienteAux.getCedula()+clienteAux.getDireccion()
-					     +","+clienteAux.getCorreo()+","+clienteAux.getFechaNacimiento()+","+clienteAux.getTelefono()+"\n";
+		for(Producto productoAux: listaProductos) {
+			contenido+= productoAux.getNombreProducto()+","+productoAux.getCategoria()+","+productoAux.getCodigoProducto()+productoAux.getMarca()
+					     +","+productoAux.getPrecio()+"\n";
 		}
 		ArchivoUtil.guardarArchivo(ruta, contenido, true);
 	}
 
 
-	
-	
-	
 	//------------------------------------SERIALIZACIÓN  y XML
 	
 	
-	public static Banco cargarRecursoBancoBinario() {
+	public static Ferreteria cargarRecursoBancoBinario() {
 		
-		Banco banco = null;
+		Ferreteria ferreteria = null;
 		
 		try {
-			banco = (Banco)ArchivoUtil.cargarRecursoSerializado(RUTA_ARCHIVO_MODELO_BANCO_BINARIO);
+			ferreteria = (Ferreteria)ArchivoUtil.cargarRecursoSerializado(RUTA_ARCHIVO_MODELO_FERRETERIA_BINARIO);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return banco;
-	}
-	
-	public static void guardarRecursoBancoBinario(Banco banco) {
-		
-		try {
-			ArchivoUtil.salvarRecursoSerializado(RUTA_ARCHIVO_MODELO_BANCO_BINARIO, banco);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		return ferreteria;
 	}
 	
 	
-	public static Banco cargarRecursoBancoXML() {
-		
-		Banco banco = null;
+	public static void guardarRecursoBancoBinario(Ferreteria ferreteria) {
 		
 		try {
-			banco = (Banco)ArchivoUtil.cargarRecursoSerializadoXML(RUTA_ARCHIVO_MODELO_BANCO_XML);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return banco;
-
-	}
-
-	
-	
-	public static void guardarRecursoBancoXML(Banco banco) {
-		
-		try {
-			ArchivoUtil.salvarRecursoSerializadoXML(RUTA_ARCHIVO_MODELO_BANCO_XML, banco);
+			ArchivoUtil.salvarRecursoSerializado(RUTA_ARCHIVO_MODELO_FERRETERIA_BINARIO, ferreteria);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+	
+	
+	public static Ferreteria cargarRecursoBancoXML() {
+		
+		Ferreteria ferreteria = null;
+		
+		try {
+			ferreteria = (Ferreteria)ArchivoUtil.cargarRecursoSerializadoXML(RUTA_ARCHIVO_MODELO_FERRETERIA_XML);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ferreteria;
+
+	}
 
 	
 	
-
-
+	public static void guardarRecursoBancoXML(Ferreteria ferreteria) {
+		
+		try {
+			ArchivoUtil.salvarRecursoSerializadoXML(RUTA_ARCHIVO_MODELO_FERRETERIA_XML, ferreteria);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 }

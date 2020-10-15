@@ -15,6 +15,7 @@ public class ModelFactoryController {
 		// El constructor de Singleton puede ser llamado desde aquí al ser
 		// protected
 		private final static ModelFactoryController eINSTANCE = new ModelFactoryController();
+	
 	}
 
 	public static ModelFactoryController getInstance() {
@@ -23,6 +24,7 @@ public class ModelFactoryController {
 
 	public ModelFactoryController() {
 		ferreteria = new Ferreteria("JJ", "123", 312);
+		
 		inicializarDatos();
 	}
 
@@ -58,6 +60,30 @@ public class ModelFactoryController {
 		producto2.setPrecio(47000);
 		producto2.setMarca("cat");
 		ferreteria.getListaProductos().add(producto2);
+		
+		Producto producto3 = new Producto();
+		producto3.setNombreProducto("Tornillo");
+		producto3.setCategoria("De mano");
+		producto3.setCodigoProducto(12);
+		producto3.setPrecio(4056);
+		producto3.setMarca("cat");
+		ferreteria.getProveedor().getProductosProveedor().add(producto3);
+		
+		/*Producto producto4 = new Producto();
+		producto4.setNombreProducto("Destornillador");
+		producto4.setCategoria("De mano");
+		producto4.setCodigoProducto(4567);
+		producto4.setPrecio(12000);
+		producto4.setMarca("cat");
+		ferreteria.getProveedor().getProductosProveedor().add(producto4);
+		
+		Producto producto5 = new Producto();
+		producto5.setNombreProducto("Martillo");
+		producto5.setCategoria("De mano");
+		producto5.setCodigoProducto(1234);
+		producto5.setPrecio(50000);
+		producto5.setMarca("cat");
+		ferreteria.getProveedor().getProductosProveedor().add(producto5);*/
 
 	}
 

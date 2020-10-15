@@ -11,11 +11,14 @@ public class Ferreteria implements Serializable, IFerreteria {
 	private String nombreFerreteria;
 	private String direccionFerreteria;
 	private int telefonoFerreteria;
+	private Inventario inventario;
+	private Proveedor proveedor;
 	private ArrayList<Empleado> listaEmpleados;
 	private ArrayList<Producto> listaProductos;
 	private ArrayList<Proveedor> listaProveedor;
 	private ArrayList<Compra> listaCompras;
 	private ArrayList<Factura_Compra> listaFacturas;
+	private ArrayList<Producto>listaObjetosAcomprar;
 
 	public Ferreteria(String nombreFerreteria, String direccionFerreteria, int telefonoFerreteria) {
 		super();
@@ -94,7 +97,6 @@ public class Ferreteria implements Serializable, IFerreteria {
 		} else {
 			getListaProductos().add(producto);
 		}
-
 	}
 
 	public Producto obtenerProducto(int codigoProducto) {
@@ -139,7 +141,7 @@ public class Ferreteria implements Serializable, IFerreteria {
 
 	@Override
 	public void anadirProveedor(Proveedor proveedor) throws yaExiste {
-		Proveedor proveedorExistente = obtenerProveedor(proveedor.getCodigoProveedor());
+		Proveedor proveedorExistente = obtenerProveedor1(proveedor.getCodigoProveedor());
 
 		if (proveedorExistente != null) {
 			throw new yaExiste("Ya existe el proveedor");
@@ -153,7 +155,7 @@ public class Ferreteria implements Serializable, IFerreteria {
 	public void modificarProveedor(String nombreProveedor, int codigoProveedor, int telefonoProveedor,
 			String direccionProveedor) {
 
-		Proveedor proveedor = obtenerProveedor(codigoProveedor);
+		Proveedor proveedor = obtenerProveedor1(codigoProveedor);
 
 		if (proveedor != null) {
 			proveedor.setCodigoProveedor(codigoProveedor);
@@ -168,7 +170,7 @@ public class Ferreteria implements Serializable, IFerreteria {
 	public Boolean eliminarProveedor(int codigoProveedor) {
 
 		Boolean Eliminado = false;
-		Proveedor proveedor = obtenerProveedor(codigoProveedor);
+		Proveedor proveedor = obtenerProveedor1(codigoProveedor);
 
 		if (proveedor != null) {
 			listaProveedor.remove(proveedor);
@@ -222,6 +224,10 @@ public class Ferreteria implements Serializable, IFerreteria {
 		}else{
 			getListaCompras().add(compraNueva);
 			getListaFacturas().add(compraNueva.getFactura_Compra());
+			for (int i = 0; i < compraNueva.getProductosCompra().size(); i++) {
+				inventario.anadirDetalleInventario(compraNueva.getCantidadCompra(), compraNueva.getProductosCompra().get(i));
+				crearProducto(compraNueva.getProductosCompra().get(i));
+			}
 		}
 	}
 	
@@ -300,6 +306,30 @@ public class Ferreteria implements Serializable, IFerreteria {
 
 	public void setListaFacturas(ArrayList<Factura_Compra> listaFacturas) {
 		this.listaFacturas = listaFacturas;
+	}
+
+	public Inventario getInventario() {
+		return inventario;
+	}
+
+	public void setInventario(Inventario inventario) {
+		this.inventario = inventario;
+	}
+
+	public ArrayList<Producto> getListaObjetosAcomprar() {
+		return listaObjetosAcomprar;
+	}
+
+	public void setListaObjetosAcomprar(ArrayList<Producto> listaCompra) {
+		this.listaObjetosAcomprar = listaCompra;
+	}
+
+	public Proveedor getProveedor() {
+		return proveedor;
+	}
+
+	public void setProveedor(Proveedor proveedor) {
+		this.proveedor = proveedor;
 	}
 
 }

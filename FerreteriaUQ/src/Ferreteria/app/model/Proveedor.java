@@ -10,7 +10,7 @@ public class Proveedor implements Serializable {
 	private int codigoProveedor;
 	private int telefonoProveedor;
 	private String direccionProveedor;
-	private ArrayList<Producto> productosProveedor;
+	public ArrayList<Producto> productosProveedor;
 
 	public Proveedor(String nombreProveedor, int codigoProveedor, int telefonoProveedor, String direccionProveedor) {
 		super();

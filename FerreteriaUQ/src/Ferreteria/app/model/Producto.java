@@ -22,7 +22,6 @@ public class Producto implements Serializable {
 	}
 
 	public Producto() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public String getNombreProducto() {

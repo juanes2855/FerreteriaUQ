@@ -1,6 +1,7 @@
 package Ferreteria.app.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Compra implements Serializable {
 
@@ -16,6 +17,7 @@ public class Compra implements Serializable {
 	private int codigoEmpleado;
 	private String nombreProveedor;
 	private int codigoProveedor;
+	private ArrayList<Producto>productosCompra;
 	
 
 	public Compra(int codigoCompra, String fechaCompra, int cantidadCompra,
@@ -25,6 +27,7 @@ public class Compra implements Serializable {
 		this.fechaCompra = fechaCompra;
 		this.cantidadCompra = cantidadCompra;
 		this.factura_Compra = factura_Compra;
+		productosCompra= new ArrayList<Producto>();
 	}
 
 	public int getCodigoCompra() {
@@ -105,6 +108,14 @@ public class Compra implements Serializable {
 
 	public void setCodigoProveedor(int codigoProveedor) {
 		this.codigoProveedor = codigoProveedor;
+	}
+
+	public ArrayList<Producto> getProductosCompra() {
+		return productosCompra;
+	}
+
+	public void setProductosCompra(ArrayList<Producto> productosCompra) {
+		this.productosCompra = productosCompra;
 	}
 
 }

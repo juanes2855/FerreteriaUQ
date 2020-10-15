@@ -1,6 +1,7 @@
 package Ferreteria.app.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Inventario implements Serializable {
 
@@ -10,17 +11,24 @@ public class Inventario implements Serializable {
 	private int cantidadInventario;
 	private String fechaEntrada;
 	private Empleado empleado;
-	private Detalle_Inventario detalleInventario;
+	private ArrayList<Detalle_Inventario>detallesInventario;
+	
 
 	public Inventario(int codigoInventario, int cantidadMaxima, int cantidadInventario, String fechaEntrada,
-			Empleado empleado, Detalle_Inventario detalleInventario) {
+			Empleado empleado) {
 		super();
 		this.codigoInventario = codigoInventario;
 		this.cantidadMaxima = cantidadMaxima;
 		this.cantidadInventario = cantidadInventario;
 		this.fechaEntrada = fechaEntrada;
 		this.empleado = empleado;
-		this.detalleInventario = detalleInventario;
+		detallesInventario= new ArrayList<Detalle_Inventario>();
+		
+	}
+	
+	public void anadirDetalleInventario(int cantidad, Producto producto){
+		Detalle_Inventario detalle= new Detalle_Inventario(cantidad, producto);
+		detallesInventario.add(detalle);
 	}
 
 	public int getCodigoInventario() {
@@ -63,12 +71,12 @@ public class Inventario implements Serializable {
 		this.empleado = empleado;
 	}
 
-	public Detalle_Inventario getDetalleInventario() {
-		return detalleInventario;
+	public ArrayList<Detalle_Inventario> getDetallesInventario() {
+		return detallesInventario;
 	}
 
-	public void setDetalleInventario(Detalle_Inventario detalleInventario) {
-		this.detalleInventario = detalleInventario;
+	public void setDetallesInventario(ArrayList<Detalle_Inventario> detallesInventario) {
+		this.detallesInventario = detallesInventario;
 	}
 
 }
