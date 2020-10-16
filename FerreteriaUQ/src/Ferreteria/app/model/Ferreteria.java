@@ -141,7 +141,7 @@ public class Ferreteria implements Serializable, IFerreteria {
 
 	@Override
 	public void anadirProveedor(Proveedor proveedor) throws yaExiste {
-		Proveedor proveedorExistente = obtenerProveedor1(proveedor.getCodigoProveedor());
+		Proveedor proveedorExistente = obtenerProveedor(proveedor.getCodigoProveedor());
 
 		if (proveedorExistente != null) {
 			throw new yaExiste("Ya existe el proveedor");
@@ -155,7 +155,7 @@ public class Ferreteria implements Serializable, IFerreteria {
 	public void modificarProveedor(String nombreProveedor, int codigoProveedor, int telefonoProveedor,
 			String direccionProveedor) {
 
-		Proveedor proveedor = obtenerProveedor1(codigoProveedor);
+		Proveedor proveedor = obtenerProveedor(codigoProveedor);
 
 		if (proveedor != null) {
 			proveedor.setCodigoProveedor(codigoProveedor);
@@ -170,7 +170,7 @@ public class Ferreteria implements Serializable, IFerreteria {
 	public Boolean eliminarProveedor(int codigoProveedor) {
 
 		Boolean Eliminado = false;
-		Proveedor proveedor = obtenerProveedor1(codigoProveedor);
+		Proveedor proveedor = obtenerProveedor(codigoProveedor);
 
 		if (proveedor != null) {
 			listaProveedor.remove(proveedor);
