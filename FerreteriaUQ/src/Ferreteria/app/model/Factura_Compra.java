@@ -8,14 +8,12 @@ public class Factura_Compra implements Serializable {
 	private int numeroFactura;
 	private int cantidadCompra;
 	private double totalCompra;
-	private double descuento;
 
-	public Factura_Compra(int numeroFactura, int cantidadCompra, double totalCompra, double descuento) {
+	public Factura_Compra(int numeroFactura, int cantidadCompra, double totalCompra) {
 		super();
 		this.numeroFactura = numeroFactura;
 		this.cantidadCompra = cantidadCompra;
 		this.totalCompra = totalCompra;
-		this.descuento = descuento;
 	}
 
 	public int getNumeroFactura() {
@@ -40,14 +38,6 @@ public class Factura_Compra implements Serializable {
 
 	public void setTotalCompra(double totalCompra) {
 		this.totalCompra = totalCompra;
-	}
-
-	public double getDescuento() {
-		return descuento;
-	}
-
-	public void setDescuento(double descuento) {
-		this.descuento = descuento;
 	}
 
 }

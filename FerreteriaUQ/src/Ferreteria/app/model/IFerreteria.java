@@ -13,7 +13,7 @@ public interface IFerreteria {
 	public void crearProducto(Producto producto) throws yaExiste;
 
 	public void modificarProducto(String nombreProducto, int codigoProducto, double precio, String categoria,
-			String marca);
+			Proveedor proveedorAsociado);
 
 	public Boolean eliminarProducto(int codigoProducto);
 

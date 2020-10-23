@@ -1,8 +1,15 @@
 package Ferreteria.app.view;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import javax.swing.JOptionPane;
+
+import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.StatusLineManager;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -17,10 +24,15 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import Ferreteria.app.Excepciones.UsuarioExcepcion;
+import Ferreteria.app.controller.CrudInicioSesion;
+
 public class InicioSesion extends ApplicationWindow {
 
 	private Text textUsuario;
 	private Text textContrasenia;
+	
+	CrudInicioSesion crudInicioSesion= new CrudInicioSesion();
 	
 	static InicioSesion windowInicioSesion = null;
 	/**
@@ -42,7 +54,7 @@ public class InicioSesion extends ApplicationWindow {
 		composite.setBounds(55, 41, 298, 287);
 		
 		textUsuario = new Text(composite, SWT.BORDER);
-		textUsuario.setBounds(10, 54, 258, 21);
+		textUsuario.setBounds(10, 54, 258, 28);
 		
 		Label lblUsuario = new Label(composite, SWT.NONE);
 		lblUsuario.setBounds(100, 20, 103, 28);
@@ -66,49 +78,55 @@ public class InicioSesion extends ApplicationWindow {
 			public void widgetSelected(SelectionEvent e) {
 				String usuario = textUsuario.getText();
 				String contrasenia = textContrasenia.getText();
+				
+				boolean inicio;
+				try{
+					inicio = crudInicioSesion.iniciarSesion(usuario, contrasenia);
+					if(inicio){
+						Display display = Display.getDefault();
+						Realm.runWithDefault(SWTObservables.getRealm(display), new Runnable() {
+							
+							@Override
+							public void run() {
+								Display display = Display.getDefault();
+								Realm.runWithDefault(SWTObservables.getRealm(display), new Runnable() {
+									
+									@Override
+									public void run() {
+										try{
+											close();
+											//windowInicioSesion.close();
+											FerreteriaView ferreteriaView = new FerreteriaView();
+											ferreteriaView.setBlockOnOpen(true);
+											ferreteriaView.open();
+											
+											Display.getCurrent().dispose();
+										}catch (Exception e){
+											System.out.println("Falla aqui "+ e);
+										}
+									}
+								});
+								
+							}
+						});
+					}
+				}catch (FileNotFoundException e1){
+					JOptionPane.showMessageDialog(null,"Archivo usuarios no existe");
+			}catch (IOException e1){
+				System.out.println(e1);
+			}catch (UsuarioExcepcion e1){
+				JOptionPane.showMessageDialog(null,"Usuario no existe");
+				//crudInicioSesion.escribirEnLog(1, "Usuario no existe: "+usuario);
+			}
 			}
 		});
+
+
 		btnIniciarSesin.setBounds(86, 238, 129, 35);
 		btnIniciarSesin.setText("Iniciar sesi\u00F3n.");
 		return container;
 	}
 
-	/**
-	 * Create the actions.
-	 */
-	private void createActions() {
-		// Create the actions
-	}
-
-	/**
-	 * Create the menu manager.
-	 * @return the menu manager
-	 */
-	@Override
-	protected MenuManager createMenuManager() {
-		MenuManager menuManager = new MenuManager("menu");
-		return menuManager;
-	}
-
-	/**
-	 * Create the toolbar manager.
-	 * @return the toolbar manager
-	 */
-	@Override
-	protected ToolBarManager createToolBarManager(int style) {
-		ToolBarManager toolBarManager = new ToolBarManager(style);
-		return toolBarManager;
-	}
-
-	/**
-	 * Create the status line manager.
-	 * @return the status line manager
-	 */
-	@Override
-	protected StatusLineManager createStatusLineManager() {
-		StatusLineManager statusLineManager = new StatusLineManager();
-		return statusLineManager;
-	}
 
 	/**
 	 * Launch the application.
@@ -116,12 +134,13 @@ public class InicioSesion extends ApplicationWindow {
 	 */
 	public static void main(String args[]) {
 		try {
-			InicioSesion window = new InicioSesion();
-			window.setBlockOnOpen(true);
-			window.open();
+			windowInicioSesion= new InicioSesion();
+			windowInicioSesion.setBlockOnOpen(true);
+			windowInicioSesion.open();
 			Display.getCurrent().dispose();
 		} catch (Exception e) {
-			e.printStackTrace();
+			//System.out.println("No olvidar "+ e);
+			JOptionPane.showMessageDialog(null, "Cierre exitoso");
 		}
 	}
 

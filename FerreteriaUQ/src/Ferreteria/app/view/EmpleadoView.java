@@ -49,7 +49,7 @@ public class EmpleadoView extends Composite {
 	Ferreteria ferreteria = crudEmpleadoViewController.getFerreteria();
 	ModelFactoryController model = new ModelFactoryController();
 
-	//Tamaño composite 938x587
+	// Tamaño composite 938x587
 	private DataBindingContext dataBindingContext = null;
 	private Table table;
 	private Text textNombreEmpleado;
@@ -62,7 +62,6 @@ public class EmpleadoView extends Composite {
 
 	private String busquedad = "";
 	Empleado empleadoSeleccionado;
-	private ComboViewer comboViewer;
 
 	public EmpleadoView(Composite parent, int style) {
 		super(parent, style);
@@ -108,55 +107,8 @@ public class EmpleadoView extends Composite {
 		lblBusqueda.setBounds(24, 44, 81, 25);
 		lblBusqueda.setText("Busqueda");
 
-		comboViewer = new ComboViewer(grpAcciones, SWT.NONE);
-		Combo comboEmpleado = comboViewer.getCombo();
-		comboEmpleado.setBounds(111, 44, 190, 38);
+		
 
-		/*
-		 * text_busqueda = new Text(grpAcciones, SWT.BORDER);
-		 * text_busqueda.setBounds(111, 38, 223, 31);
-		 * 
-		 * text_busqueda.addModifyListener(new ModifyListener() {
-		 * 
-		 * @Override public void modifyText(ModifyEvent e) { Text source =
-		 * (Text) e.getSource(); busquedad = source.getText(); // Trigger update
-		 * in the viewer tableViewerEmpleado.refresh(); } });
-		 * text_busqueda.addSelectionListener(new SelectionAdapter() { public
-		 * void widgetDefaultSelected(SelectionEvent e) { if (e.detail ==
-		 * SWT.CANCEL) { Text text = (Text) e.getSource(); text.setText(""); //
-		 * } } });
-		 * 
-		 * 
-		 * tableViewerEmpleado.addFilter(new ViewerFilter() { //Nullpointed acá
-		 * 
-		 * @Override public boolean select(Viewer viewer, Object parentElement,
-		 * Object element) {
-		 * 
-		 * Empleado empleadoBusqueda = (Empleado) element; try { return
-		 * 
-		 * empleadoBusqueda.getNombreEmpleado().contains(busquedad) ||
-		 * empleadoBusqueda.getNombreEmpleado().toLowerCase().contains(busquedad
-		 * .toLowerCase()) ||
-		 * empleadoBusqueda.getNombreEmpleado().toUpperCase().contains(busquedad
-		 * .toUpperCase()) ;
-		 * 
-		 * /*empleadoBusqueda.getCargo().contains(busquedad) ||
-		 * empleadoBusqueda.getCargo().toLowerCase().contains(busquedad.
-		 * toLowerCase()) ||
-		 * empleadoBusqueda.getCargo().toUpperCase().contains(busquedad.
-		 * toUpperCase()) ||
-		 * 
-		 * empleadoBusqueda.getDireccion().contains(busquedad) ||
-		 * empleadoBusqueda.getDireccion().toLowerCase().contains(busquedad.
-		 * toLowerCase()) ||
-		 * empleadoBusqueda.getDireccion().toUpperCase().contains(busquedad.
-		 * toUpperCase());
-		 * 
-		 * } catch (Exception e) {
-		 * 
-		 * return false; } } });
-		 * 
-		 */
 		Group grpListaEmpleados = new Group(this, SWT.NONE);
 		grpListaEmpleados.setText("Lista Empleados");
 		grpListaEmpleados.setBounds(10, 108, 918, 254);
@@ -240,6 +192,55 @@ public class EmpleadoView extends Composite {
 		Label lblDireccin = new Label(grpDetalles, SWT.NONE);
 		lblDireccin.setBounds(404, 78, 81, 25);
 		lblDireccin.setText("Direcci\u00F3n");
+		
+		text_busqueda = new Text(grpAcciones, SWT.BORDER);
+		text_busqueda.setBounds(111, 38, 223, 31);
+
+		text_busqueda.addModifyListener(new ModifyListener() {
+
+			@Override
+			public void modifyText(ModifyEvent e) {
+				Text source = (Text) e.getSource();
+				busquedad = source.getText();
+				tableViewerEmpleado.refresh();
+			}
+		});
+		text_busqueda.addSelectionListener(new SelectionAdapter() {
+			public void widgetDefaultSelected(SelectionEvent e) {
+				if (e.detail == SWT.CANCEL) {
+					Text text = (Text) e.getSource();
+					text.setText(""); //
+				}
+			}
+		});
+
+		tableViewerEmpleado.addFilter(new ViewerFilter() { // Nullpointed acá
+
+			@Override
+			public boolean select(Viewer viewer, Object parentElement, Object element) {
+
+				Empleado empleadoBusqueda = (Empleado) element;
+				try {
+					return
+
+					empleadoBusqueda.getNombreEmpleado().contains(busquedad)
+							|| empleadoBusqueda.getNombreEmpleado().toLowerCase().contains(busquedad.toLowerCase())
+							|| empleadoBusqueda.getNombreEmpleado().toUpperCase().contains(busquedad.toUpperCase()) ||
+
+							empleadoBusqueda.getCargo().contains(busquedad.toUpperCase())
+							|| empleadoBusqueda.getCargo().toLowerCase().contains(busquedad.toLowerCase())
+							|| empleadoBusqueda.getCargo().toUpperCase().contains(busquedad.toUpperCase()) ||
+
+							empleadoBusqueda.getDireccion().contains(busquedad)
+							|| empleadoBusqueda.getDireccion().toLowerCase().contains(busquedad.toLowerCase())
+							|| empleadoBusqueda.getDireccion().toUpperCase().contains(busquedad.toUpperCase());
+
+				} catch (Exception e) {
+
+					return false;
+				}
+			}
+		});
 
 		textDireccionEmpleado = new Text(grpDetalles, SWT.BORDER);
 		textDireccionEmpleado.setBounds(491, 75, 234, 31);
@@ -299,29 +300,6 @@ public class EmpleadoView extends Composite {
 
 	}
 
-	protected DataBindingContext initDataBindings() {
-		DataBindingContext bindingContext = new DataBindingContext();
-		//
-		ObservableListContentProvider listContentProvider = new ObservableListContentProvider();
-		IObservableMap[] observeMaps = PojoObservables.observeMaps(listContentProvider.getKnownElements(),
-				Empleado.class, new String[] { "nombreEmpleado", "cargo", "codigoEmpleado", "salario", "direccion" });
-		tableViewerEmpleado.setLabelProvider(new ObservableMapLabelProvider(observeMaps));
-		tableViewerEmpleado.setContentProvider(listContentProvider);
-		//
-		IObservableList listaEmpleadosFerreteriaObserveList = PojoProperties.list("listaEmpleados").observe(ferreteria);
-		tableViewerEmpleado.setInput(listaEmpleadosFerreteriaObserveList);
-		//
-		ObservableListContentProvider listContentProvider_1 = new ObservableListContentProvider();
-		IObservableMap observeMap = PojoObservables.observeMap(listContentProvider_1.getKnownElements(), Empleado.class,
-				"nombreEmpleado");
-		comboViewer.setLabelProvider(new ObservableMapLabelProvider(observeMap));
-		comboViewer.setContentProvider(listContentProvider_1);
-		//
-		comboViewer.setInput(listaEmpleadosFerreteriaObserveList);
-		//
-		return bindingContext;
-	}
-
 	public void limpiarCampoTexto() {
 		textNombreEmpleado.setText("");
 		textCargoEmpleado.setText("");
@@ -342,5 +320,19 @@ public class EmpleadoView extends Composite {
 
 			return true;
 		}
+	}
+	
+	protected DataBindingContext initDataBindings() {
+		DataBindingContext bindingContext = new DataBindingContext();
+		//
+		ObservableListContentProvider listContentProvider = new ObservableListContentProvider();
+		IObservableMap[] observeMaps = PojoObservables.observeMaps(listContentProvider.getKnownElements(), Empleado.class, new String[]{"nombreEmpleado", "cargo", "codigoEmpleado", "salario", "direccion"});
+		tableViewerEmpleado.setLabelProvider(new ObservableMapLabelProvider(observeMaps));
+		tableViewerEmpleado.setContentProvider(listContentProvider);
+		//
+		IObservableList listaEmpleadosFerreteriaObserveList = PojoProperties.list("listaEmpleados").observe(ferreteria);
+		tableViewerEmpleado.setInput(listaEmpleadosFerreteriaObserveList);
+		//
+		return bindingContext;
 	}
 }

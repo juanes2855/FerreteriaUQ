@@ -12,12 +12,16 @@ import Ferreteria.app.model.Ferreteria;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
@@ -27,8 +31,25 @@ import Ferreteria.app.model.Producto;
 import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.beans.PojoProperties;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
+
+import Ferreteria.app.model.Proveedor;
 
 public class ProductoView extends Composite {
+
+	/*
+	 * Realizar esta clase a partir de la lista de todos los productos, se
+	 * tienen dos listas aparte uno de productos comprados y no comprados
+	 * cambiar anexar los productos un estado que cuando se encuentre sin
+	 * comprar y cambia cuando lo compren Esta vista le va a añadir productos es
+	 * a un proveedor seleccionado
+	 * 
+	 * Falta ----- añadirle a la tabla el estado reestructurar la clase producto
+	 */
 
 	CrudProductoViewController crudProductoViewController = new CrudProductoViewController();
 	Ferreteria ferreteria = crudProductoViewController.getFerreteria();
@@ -40,10 +61,14 @@ public class ProductoView extends Composite {
 	private Text textCodigoProd;
 	private Text textPrecioProd;
 	private Text textCategoriaProd;
-	private Text textMarcaProd;
 	private TableViewer tableProductos;
+	private Text text_busqueda;
+
+	private String busquedad = "";
 
 	Producto productoSeleccionado;
+	Proveedor proveedorSeleccionadoCombo;
+	private ComboViewer comboViewerMarca;
 
 	public ProductoView(Composite parent, int style) {
 		super(parent, style);
@@ -67,14 +92,14 @@ public class ProductoView extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Boolean flag = false;
-				if(productoSeleccionado != null){
-					flag= crudProductoViewController.eliminarProducto(productoSeleccionado.getCodigoProducto());
+				if (productoSeleccionado != null) {
+					flag = crudProductoViewController.eliminarProducto(productoSeleccionado.getCodigoProducto());
 					limpiarCampoTexto();
 					initDataBindings();
-					
-					if(flag == true){
+
+					if (flag == true) {
 						JOptionPane.showMessageDialog(null, "El producto se elimino con exito");
-					}else{
+					} else {
 						JOptionPane.showMessageDialog(null, "No se pudo eliminar");
 					}
 				}
@@ -91,16 +116,15 @@ public class ProductoView extends Composite {
 		table = tableProductos.getTable();
 		table.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e){
-				 
-				productoSeleccionado= (Producto) table.getItem(table.getSelectionIndex()).getData();
-				
+			public void widgetSelected(SelectionEvent e) {
+
+				productoSeleccionado = (Producto) table.getItem(table.getSelectionIndex()).getData();
+
+				textNombreProd.setText(productoSeleccionado.getNombreProducto());
 				textCategoriaProd.setText(productoSeleccionado.getCategoria());
 				textCodigoProd.setText(Integer.toString(productoSeleccionado.getCodigoProducto()));
-				textMarcaProd.setText(productoSeleccionado.getMarca());
-				textNombreProd.setText(productoSeleccionado.getNombreProducto());
 				textPrecioProd.setText(Double.toString(productoSeleccionado.getPrecio()));
-				
+				comboViewerMarca.setSelection(new StructuredSelection(productoSeleccionado.getProveedorAsociado()));
 			}
 		});
 		table.setHeaderVisible(true);
@@ -168,8 +192,62 @@ public class ProductoView extends Composite {
 		textCategoriaProd = new Text(grpDetalles, SWT.BORDER);
 		textCategoriaProd.setBounds(582, 35, 248, 31);
 
-		textMarcaProd = new Text(grpDetalles, SWT.BORDER);
-		textMarcaProd.setBounds(582, 83, 248, 31);
+		text_busqueda = new Text(grpAcciones, SWT.BORDER);
+		text_busqueda.setBounds(111, 38, 223, 31);
+
+		Label lblBusqueda = new Label(grpAcciones, SWT.NONE);
+		lblBusqueda.setBounds(10, 42, 81, 25);
+		lblBusqueda.setText("Busqueda");
+
+		text_busqueda.addModifyListener(new ModifyListener() {
+
+			@Override
+			public void modifyText(ModifyEvent e) {
+				Text source = (Text) e.getSource();
+				busquedad = source.getText();
+				tableProductos.refresh();
+			}
+		});
+		text_busqueda.addSelectionListener(new SelectionAdapter() {
+			public void widgetDefaultSelected(SelectionEvent e) {
+				if (e.detail == SWT.CANCEL) {
+					Text text = (Text) e.getSource();
+					text.setText(""); //
+				}
+			}
+		});
+
+		tableProductos.addFilter(new ViewerFilter() {
+
+			@Override
+			public boolean select(Viewer viewer, Object parentElement, Object element) {
+
+				Producto productoBusqueda = (Producto) element;
+				try {
+					return productoBusqueda.getNombreProducto().contains(busquedad)
+							|| productoBusqueda.getNombreProducto().toLowerCase().contains(busquedad)
+							|| productoBusqueda.getNombreProducto().toUpperCase().contains(busquedad)
+							|| String.valueOf(productoBusqueda.getCodigoProducto()).contains((busquedad));
+
+				} catch (Exception e) {
+
+					return false;
+				}
+			}
+		});
+		comboViewerMarca = new ComboViewer(grpDetalles, SWT.READ_ONLY);
+		Combo comboMarca = comboViewerMarca.getCombo();
+		comboMarca.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+
+				IStructuredSelection x = (IStructuredSelection) comboViewerMarca.getSelection();
+				proveedorSeleccionadoCombo = (Proveedor) x.getFirstElement();
+
+			}
+		});
+		comboMarca.setBounds(582, 83, 248, 33);
+		dataBindingContext = initDataBindings();
 
 		Button btnAgregarProducto = new Button(grpDetalles, SWT.NONE);
 		btnAgregarProducto.addSelectionListener(new SelectionAdapter() {
@@ -184,7 +262,7 @@ public class ProductoView extends Composite {
 
 						productoNuevo.setCategoria(textCategoriaProd.getText());
 						productoNuevo.setCodigoProducto(Integer.parseInt(textCodigoProd.getText()));
-						productoNuevo.setMarca(textMarcaProd.getText());
+						productoNuevo.setProveedorAsociado(proveedorSeleccionadoCombo);
 						productoNuevo.setNombreProducto(textNombreProd.getText());
 						productoNuevo.setPrecio(Double.valueOf(textPrecioProd.getText()));
 
@@ -193,7 +271,7 @@ public class ProductoView extends Composite {
 						limpiarCampoTexto();
 
 					} catch (yaExiste e1) {
-						JOptionPane.showMessageDialog(null, "El empleado ya existe", null, JOptionPane.WARNING_MESSAGE,
+						JOptionPane.showMessageDialog(null, "El producto ya existe", null, JOptionPane.WARNING_MESSAGE,
 								null);
 					} catch (NumberFormatException e2) {
 						JOptionPane.showMessageDialog(null, "No se aceptan letras en código ó precio", null,
@@ -213,21 +291,21 @@ public class ProductoView extends Composite {
 				if (productoSeleccionado != null) {
 					crudProductoViewController.actualizarProducto(textNombreProd.getText(),
 							Integer.valueOf(textCodigoProd.getText()), Double.valueOf(textPrecioProd.getText()),
-							textCategoriaProd.getText(), textMarcaProd.getText());
+							textCategoriaProd.getText(), proveedorSeleccionadoCombo);
+					limpiarCampoTexto();
 					initDataBindings();
 				}
 			}
 		});
 		btnActualizarProducto.setBounds(629, 144, 166, 35);
 		btnActualizarProducto.setText("Actualizar Producto");
-		dataBindingContext = initDataBindings();
 
 	}
 
 	public void limpiarCampoTexto() {
 		textCategoriaProd.setText("");
 		textCodigoProd.setText("");
-		textMarcaProd.setText("");
+		comboViewerMarca.setSelection(null);// ojo
 		textNombreProd.setText("");
 		textPrecioProd.setText("");
 	}
@@ -235,8 +313,7 @@ public class ProductoView extends Composite {
 	public Boolean verificarCamposVacios() {
 
 		if (textCategoriaProd.getText().equalsIgnoreCase("") || textCodigoProd.getText().equalsIgnoreCase("")
-				|| textMarcaProd.getText().equalsIgnoreCase("") || textNombreProd.getText().equalsIgnoreCase("")
-				|| textPrecioProd.getText().equalsIgnoreCase("")) {
+				|| textNombreProd.getText().equalsIgnoreCase("") || textPrecioProd.getText().equalsIgnoreCase("")) {
 
 			return false;
 		} else {
@@ -255,12 +332,22 @@ public class ProductoView extends Composite {
 		//
 		ObservableListContentProvider listContentProvider = new ObservableListContentProvider();
 		IObservableMap[] observeMaps = PojoObservables.observeMaps(listContentProvider.getKnownElements(),
-				Producto.class, new String[] { "nombreProducto", "codigoProducto", "precio", "categoria", "marca" });
+				Producto.class, new String[] { "nombreProducto", "codigoProducto", "precio", "categoria",
+						"proveedorAsociado.nombreProveedor" });
 		tableProductos.setLabelProvider(new ObservableMapLabelProvider(observeMaps));
 		tableProductos.setContentProvider(listContentProvider);
 		//
 		IObservableList listaProductosFerreteriaObserveList = PojoProperties.list("listaProductos").observe(ferreteria);
 		tableProductos.setInput(listaProductosFerreteriaObserveList);
+		//
+		ObservableListContentProvider listContentProvider_1 = new ObservableListContentProvider();
+		IObservableMap observeMap = PojoObservables.observeMap(listContentProvider_1.getKnownElements(),
+				Proveedor.class, "nombreProveedor");
+		comboViewerMarca.setLabelProvider(new ObservableMapLabelProvider(observeMap));
+		comboViewerMarca.setContentProvider(listContentProvider_1);
+		//
+		IObservableList listaProveedorFerreteriaObserveList = PojoProperties.list("listaProveedor").observe(ferreteria);
+		comboViewerMarca.setInput(listaProveedorFerreteriaObserveList);
 		//
 		return bindingContext;
 	}

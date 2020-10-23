@@ -3,6 +3,9 @@ package Ferreteria.app.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
+import Ferreteria.app.Excepciones.soloUnProveedor;
 import Ferreteria.app.Excepciones.yaExiste;
 
 public class Ferreteria implements Serializable, IFerreteria {
@@ -15,10 +18,12 @@ public class Ferreteria implements Serializable, IFerreteria {
 	private Proveedor proveedor;
 	private ArrayList<Empleado> listaEmpleados;
 	private ArrayList<Producto> listaProductos;
+	private ArrayList<Producto> listaProductosOfProveedor;
 	private ArrayList<Proveedor> listaProveedor;
 	private ArrayList<Compra> listaCompras;
 	private ArrayList<Factura_Compra> listaFacturas;
-	private ArrayList<Producto>listaObjetosAcomprar;
+	private ArrayList<Detalle_Inventario>listaObjetosAcomprar;
+
 
 	public Ferreteria(String nombreFerreteria, String direccionFerreteria, int telefonoFerreteria) {
 		super();
@@ -30,11 +35,17 @@ public class Ferreteria implements Serializable, IFerreteria {
 		listaProveedor = new ArrayList<Proveedor>();
 		listaCompras= new ArrayList<Compra>();
 		listaFacturas= new ArrayList<Factura_Compra>();
+		//listaProductosOfProveedor= new ArrayList<Producto>();
+		listaObjetosAcomprar= new ArrayList<Detalle_Inventario>();
 	}
 
 	public Ferreteria() {
 
 	}
+	
+//	public ArrayList<Producto> obtenerListadeProductosProveedor(Proveedor proveedor){
+//	    	return proveedor.getProductosProveedor();
+//	}
 
 	@Override
 	public void crearEmpleado(Empleado nuevoEmpleado) throws yaExiste {
@@ -96,6 +107,7 @@ public class Ferreteria implements Serializable, IFerreteria {
 			throw new yaExiste("Ya existe el producto");
 		} else {
 			getListaProductos().add(producto);
+			
 		}
 	}
 
@@ -113,13 +125,13 @@ public class Ferreteria implements Serializable, IFerreteria {
 
 	@Override
 	public void modificarProducto(String nombreProducto, int codigoProducto, double precio, String categoria,
-			String marca) {
+			Proveedor proveedor) {
 
 		Producto producto = obtenerProducto(codigoProducto);
 		if (producto != null) {
 
 			producto.setCategoria(categoria);
-			producto.setMarca(marca);
+			producto.setProveedorAsociado(proveedor);
 			producto.setCodigoProducto(codigoProducto);
 			producto.setNombreProducto(nombreProducto);
 			producto.setPrecio(precio);
@@ -316,12 +328,12 @@ public class Ferreteria implements Serializable, IFerreteria {
 		this.inventario = inventario;
 	}
 
-	public ArrayList<Producto> getListaObjetosAcomprar() {
+	public ArrayList<Detalle_Inventario> getListaObjetosAcomprar() {
 		return listaObjetosAcomprar;
 	}
 
-	public void setListaObjetosAcomprar(ArrayList<Producto> listaCompra) {
-		this.listaObjetosAcomprar = listaCompra;
+	public void setListaObjetosAcomprar(ArrayList<Detalle_Inventario> listaObjetosAcomprar) {
+		this.listaObjetosAcomprar = listaObjetosAcomprar;
 	}
 
 	public Proveedor getProveedor() {
@@ -330,6 +342,26 @@ public class Ferreteria implements Serializable, IFerreteria {
 
 	public void setProveedor(Proveedor proveedor) {
 		this.proveedor = proveedor;
+	}
+
+	public void anadirDetalleAlista(Producto productoSeleccionado, int cantidad) throws soloUnProveedor {
+		Detalle_Inventario detalle = new Detalle_Inventario(cantidad, productoSeleccionado);
+		if(listaObjetosAcomprar.size()==0){
+			listaObjetosAcomprar.add(detalle);
+		}else if(productoSeleccionado.getProveedorAsociado()==listaObjetosAcomprar.get(0).getProducto().getProveedorAsociado()){
+			listaObjetosAcomprar.add(detalle);
+		}else{	
+			throw new soloUnProveedor("Solo se puede un proveedor");	
+		}
+		
+	}
+
+	public void quitarDetalleLista(Detalle_Inventario detalleSeleccionado) {
+	    listaObjetosAcomprar.remove(detalleSeleccionado);	
+	}
+
+	public void limpiarLista() {
+		listaObjetosAcomprar.clear();
 	}
 
 }

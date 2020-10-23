@@ -15,13 +15,11 @@ public class Compra implements Serializable {
 	
 	private String nombreEmpleado;
 	private int codigoEmpleado;
-	private String nombreProveedor;
-	private int codigoProveedor;
 	private ArrayList<Producto>productosCompra;
 	
 
 	public Compra(int codigoCompra, String fechaCompra, int cantidadCompra,
-			Factura_Compra factura_Compra) {
+			Factura_Compra factura_Compra, Proveedor proveedorAsociado, Empleado empleadoAsociado) {
 		super();
 		this.codigoCompra = codigoCompra;
 		this.fechaCompra = fechaCompra;
@@ -30,10 +28,13 @@ public class Compra implements Serializable {
 		productosCompra= new ArrayList<Producto>();
 	}
 
+	public Compra() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public int getCodigoCompra() {
 		return codigoCompra;
 	}
-    //no
 	public void setCodigoCompra(int codigoCompra) {
 		this.codigoCompra = codigoCompra;
 	}
@@ -77,39 +78,6 @@ public class Compra implements Serializable {
 	public void setProveedorAsociado(Proveedor proveedorAsociado) {
 		this.proveedorAsociado = proveedorAsociado;
 	}
-
-	public String getNombreEmpleado() {
-		return nombreEmpleado;
-	}
-
-	public void setNombreEmpleado(String nombreEmpleado) {
-		this.nombreEmpleado = nombreEmpleado;
-	}
-
-	public int getCodigoEmpleado() {
-		return codigoEmpleado;
-	}
-
-	public void setCodigoEmpleado(int codigoEmpleado) {
-		this.codigoEmpleado = codigoEmpleado;
-	}
-
-	public String getNombreProveedor() {
-		return nombreProveedor;
-	}
-
-	public void setNombreProveedor(String nombreProveedor) {
-		this.nombreProveedor = nombreProveedor;
-	}
-
-	public int getCodigoProveedor() {
-		return codigoProveedor;
-	}
-
-	public void setCodigoProveedor(int codigoProveedor) {
-		this.codigoProveedor = codigoProveedor;
-	}
-
 	public ArrayList<Producto> getProductosCompra() {
 		return productosCompra;
 	}

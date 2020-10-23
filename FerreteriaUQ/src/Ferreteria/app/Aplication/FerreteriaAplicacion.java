@@ -5,6 +5,7 @@ import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.swt.widgets.Display;
 
 import Ferreteria.app.view.FerreteriaView;
+import Ferreteria.app.view.InicioSesion;
 
 public class FerreteriaAplicacion {
 
@@ -23,12 +24,16 @@ public class FerreteriaAplicacion {
 						try {
 
 							// close();
+							InicioSesion inicioSesion= new InicioSesion();
+							inicioSesion.open();
+							inicioSesion.setBlockOnOpen(true);
+							inicioSesion.open();
 
-							FerreteriaView ferreteriaView = new FerreteriaView();
-
-							ferreteriaView.open();
-							ferreteriaView.setBlockOnOpen(true);
-							ferreteriaView.open();
+//							FerreteriaView ferreteriaView = new FerreteriaView();
+//
+//							ferreteriaView.open();
+//							ferreteriaView.setBlockOnOpen(true);
+//							ferreteriaView.open();
 							Display.getCurrent().dispose();
 						} catch (Exception e) {
 							e.printStackTrace();

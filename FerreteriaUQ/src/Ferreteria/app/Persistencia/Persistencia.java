@@ -166,15 +166,15 @@ public class Persistencia {
 	 * @throws IOException
 	 */
 	
-	public static void guardarProductos(ArrayList<Producto> listaProductos, String ruta) throws IOException  {
-		String contenido = "";
-		
-		for(Producto productoAux: listaProductos) {
-			contenido+= productoAux.getNombreProducto()+","+productoAux.getCategoria()+","+productoAux.getCodigoProducto()+productoAux.getMarca()
-					     +","+productoAux.getPrecio()+"\n";
-		}
-		ArchivoUtil.guardarArchivo(ruta, contenido, true);
-	}
+//	public static void guardarProductos(ArrayList<Producto> listaProductos, String ruta) throws IOException  {
+//		String contenido = "";
+//		
+//		for(Producto productoAux: listaProductos) {
+//			contenido+= productoAux.getNombreProducto()+","+productoAux.getCategoria()+","+productoAux.getCodigoProducto()+productoAux.getMarca()
+//					     +","+productoAux.getPrecio()+"\n";
+//		}
+//		ArchivoUtil.guardarArchivo(ruta, contenido, true);
+//	}
 
 
 	//------------------------------------SERIALIZACIÓN  y XML

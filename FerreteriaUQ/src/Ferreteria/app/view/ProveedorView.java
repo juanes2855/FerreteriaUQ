@@ -15,12 +15,16 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
 import org.eclipse.core.databinding.observable.map.IObservableMap;
 import org.eclipse.core.databinding.beans.PojoObservables;
@@ -44,7 +48,8 @@ public class ProveedorView extends Composite {
 	private Text textDireccion;
 	private Text textTelefono;
 	Proveedor proveedorSeleccionado;
-	public String busqueda = "";
+	public String busquedad = "";
+	private Text text_busqueda;
 
 	/**
 	 * Create the composite.
@@ -53,7 +58,6 @@ public class ProveedorView extends Composite {
 	 */
 	public ProveedorView(Composite parent, int style) {
 		super(parent, style);
-		
 		Group grpAcciones = new Group(this, SWT.NONE);
 		grpAcciones.setText("Acciones");
 		grpAcciones.setBounds(10, 10, 918, 92);
@@ -61,9 +65,6 @@ public class ProveedorView extends Composite {
 		Label lblBusqueda = new Label(grpAcciones, SWT.NONE);
 		lblBusqueda.setBounds(25, 40, 81, 25);
 		lblBusqueda.setText("Busqueda");
-		
-		Combo combo = new Combo(grpAcciones, SWT.NONE);
-		combo.setBounds(124, 40, 180, 33);
 		
 		Button btnNuevoProveedor = new Button(grpAcciones, SWT.NONE);
 		btnNuevoProveedor.addSelectionListener(new SelectionAdapter() {
@@ -214,6 +215,51 @@ public class ProveedorView extends Composite {
 		});
 		btnModificarProveedor.setBounds(693, 497, 202, 35);
 		btnModificarProveedor.setText("Modificar Proveedor");
+		text_busqueda = new Text(grpAcciones, SWT.BORDER);
+		text_busqueda.setBounds(111, 38, 223, 31);
+
+		text_busqueda.addModifyListener(new ModifyListener() {
+
+			@Override
+			public void modifyText(ModifyEvent e) {
+				Text source = (Text) e.getSource();
+				busquedad = source.getText();
+				tableViewer.refresh();
+			}
+		});
+		text_busqueda.addSelectionListener(new SelectionAdapter() {
+			public void widgetDefaultSelected(SelectionEvent e) {
+				if (e.detail == SWT.CANCEL) {
+					Text text = (Text) e.getSource();
+					text.setText(""); //
+				}
+			}
+		});
+
+		tableViewer.addFilter(new ViewerFilter() { // Nullpointed acá
+
+			@Override
+			public boolean select(Viewer viewer, Object parentElement, Object element) {
+
+				Proveedor proveedorBusqueda = (Proveedor) element;
+				try {
+					return
+
+					proveedorBusqueda.getNombreProveedor().contains(busquedad)
+							|| proveedorBusqueda.getNombreProveedor().toLowerCase().contains(busquedad.toLowerCase())
+							|| proveedorBusqueda.getNombreProveedor().toUpperCase().contains(busquedad.toUpperCase()) ||
+
+							proveedorBusqueda.getDireccionProveedor().contains(busquedad.toUpperCase())
+							|| proveedorBusqueda.getDireccionProveedor().toLowerCase().contains(busquedad.toLowerCase())
+							||  proveedorBusqueda.getDireccionProveedor().toUpperCase().contains(busquedad.toUpperCase()) ||
+							String.valueOf(proveedorBusqueda.getCodigoProveedor()).contains(busquedad);
+							
+				} catch (Exception e) {
+
+					return false;
+				}
+			}
+		});
 		dataBindingContext = initDataBindings();
 
 	}

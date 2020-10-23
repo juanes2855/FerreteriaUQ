@@ -10,7 +10,7 @@ public class Proveedor implements Serializable {
 	private int codigoProveedor;
 	private int telefonoProveedor;
 	private String direccionProveedor;
-	public ArrayList<Producto> productosProveedor;
+	//public ArrayList<Producto> productosProveedor;
 
 	public Proveedor(String nombreProveedor, int codigoProveedor, int telefonoProveedor, String direccionProveedor) {
 		super();
@@ -18,6 +18,7 @@ public class Proveedor implements Serializable {
 		this.codigoProveedor = codigoProveedor;
 		this.telefonoProveedor = telefonoProveedor;
 		this.direccionProveedor = direccionProveedor;
+		//productosProveedor = new ArrayList<Producto>();
 	}
 
 	public Proveedor() {
@@ -56,12 +57,12 @@ public class Proveedor implements Serializable {
 		this.direccionProveedor = direccionProveedor;
 	}
 
-	public ArrayList<Producto> getProductosProveedor() {
-		return productosProveedor;
-	}
-
-	public void setProductosProveedor(ArrayList<Producto> productosProveedor) {
-		this.productosProveedor = productosProveedor;
-	}
+//	public ArrayList<Producto> getProductosProveedor() {
+//		return productosProveedor;
+//	}
+//
+//	public void setProductosProveedor(ArrayList<Producto> productosProveedor) {
+//		this.productosProveedor = productosProveedor;
+//	}
 
 }

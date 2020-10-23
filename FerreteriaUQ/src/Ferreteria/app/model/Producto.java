@@ -9,16 +9,16 @@ public class Producto implements Serializable {
 	private int codigoProducto;
 	private double precio;
 	private String categoria;
-	private String marca;
 	private Proveedor proveedorAsociado;
 
-	public Producto(String nombreProducto, int codigoProducto, double precio, String categoria, String marca) {
+	public Producto(String nombreProducto, int codigoProducto, double precio, String categoria,
+			Proveedor proveedorAsociado) {
 		super();
 		this.nombreProducto = nombreProducto;
 		this.codigoProducto = codigoProducto;
 		this.precio = precio;
 		this.categoria = categoria;
-		this.marca = marca;
+		this.proveedorAsociado = proveedorAsociado;
 	}
 
 	public Producto() {
@@ -54,14 +54,6 @@ public class Producto implements Serializable {
 
 	public void setCategoria(String categoria) {
 		this.categoria = categoria;
-	}
-
-	public String getMarca() {
-		return marca;
-	}
-
-	public void setMarca(String marca) {
-		this.marca = marca;
 	}
 
 	public Proveedor getProveedorAsociado() {

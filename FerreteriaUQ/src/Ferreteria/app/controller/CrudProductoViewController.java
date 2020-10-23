@@ -3,6 +3,7 @@ package Ferreteria.app.controller;
 import Ferreteria.app.Excepciones.yaExiste;
 import Ferreteria.app.model.Ferreteria;
 import Ferreteria.app.model.Producto;
+import Ferreteria.app.model.Proveedor;
 
 public class CrudProductoViewController {
 
@@ -20,8 +21,8 @@ public class CrudProductoViewController {
 	}
 
 	public void actualizarProducto(String nombreProducto, int codigoProducto, double precio, String categoria,
-			String marca) {
-		modelFactoryController.actualizarProducto(nombreProducto, codigoProducto, precio, categoria, marca);
+			Proveedor proveedor) {
+		modelFactoryController.actualizarProducto(nombreProducto, codigoProducto, precio, categoria, proveedor);
 	}
 	
 	public Boolean eliminarProducto(int codigoProducto){
