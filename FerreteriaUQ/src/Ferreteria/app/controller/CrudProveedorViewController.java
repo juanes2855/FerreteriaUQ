@@ -48,5 +48,17 @@ public class CrudProveedorViewController {
 	public void setFerreteria(Ferreteria ferreteria) {
 		this.ferreteria = ferreteria;
 	}
+	public void salvarDatos() {
+		modelFactoryController.salvarDatos();
+	}
+
+	public void guardarArchivoLog(String mensaje, int nivel, String accion) {
+		modelFactoryController.guardarLog(mensaje, nivel, accion);	
+	}
+
+	public void guardaDatosTextoPlano() {
+	modelFactoryController.guardardatos();
+		
+	}
 
 }

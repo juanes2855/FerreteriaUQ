@@ -46,4 +46,16 @@ public class CrudEmpleadoViewController implements IControlCrudEmpleadoView {
 		return modelFactoryController.obtenerEmpleado(codigoEmpleado);
 	}
 
+	public void salvarDatos() {
+		modelFactoryController.salvarDatos();
+	}
+
+	public void guardarArchivoLog(String mensaje, int nivel, String accion) {
+		modelFactoryController.guardarLog(mensaje, nivel, accion);	
+	}
+
+	public void guardaTextoPlano() {
+		modelFactoryController.guardardatos();
+	}
+
 }

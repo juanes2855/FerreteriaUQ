@@ -5,6 +5,7 @@ import javax.swing.JOptionPane;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.swt.widgets.Composite;
 
+import Ferreteria.app.Excepciones.numeroErroneo;
 import Ferreteria.app.Excepciones.yaExiste;
 import Ferreteria.app.controller.CrudProveedorViewController;
 import Ferreteria.app.controller.ModelFactoryController;
@@ -85,11 +86,17 @@ public class ProveedorView extends Composite {
 					flag= crudProveedorViewController.eliminarProveedor(proveedorSeleccionado.getCodigoProveedor());
 					limpiarCampoTexto();
 					initDataBindings();
+					 
+					crudProveedorViewController.salvarDatos();
+					crudProveedorViewController.guardaDatosTextoPlano();
+						crudProveedorViewController.guardarArchivoLog("Se ha eliminado el proveedor: "+ proveedorSeleccionado.getNombreProveedor(),
+								2, "ProveedorEliminado");
 					
 					if(flag == true){
 						JOptionPane.showMessageDialog(null, "El proveerdor se elimino con exito");
 					}else{
 						JOptionPane.showMessageDialog(null, "No se pudo eliminar");
+						crudProveedorViewController.guardarArchivoLog("Falló al eliminar", 1, "FalloEliminar");
 					}
 				}
 			}
@@ -186,12 +193,18 @@ public class ProveedorView extends Composite {
 						 crudProveedorViewController.crearProveedor(prooNuevo);
 						 initDataBindings();
 						 limpiarCampoTexto();
+						 
+						 crudProveedorViewController.salvarDatos();
+						 crudProveedorViewController.guardaDatosTextoPlano();
+							crudProveedorViewController.guardarArchivoLog("Se ha añadido el proveedor: "+prooNuevo.getNombreProveedor(),
+									2, "ProveedorAñadido");
 					 } catch(yaExiste e1){
 						 JOptionPane.showMessageDialog(null, "El proveedor ya existe" , null, JOptionPane.WARNING_MESSAGE, null);
+						 crudProveedorViewController.guardarArchivoLog("El proveedor ya existe", 1, "ProveedorRepetido");
 						 
-					 }catch(NumberFormatException e2){
+					 }catch(numeroErroneo e2){
 						 JOptionPane.showMessageDialog(null, "No se aceptan letras en código y telefono", null, JOptionPane.WARNING_MESSAGE, null);
-						 
+						 crudProveedorViewController.guardarArchivoLog("Datos erroneos", 1, "DatosErroneos");
 					 }
 				}
 			}
@@ -208,8 +221,12 @@ public class ProveedorView extends Composite {
 					crudProveedorViewController.actualizarProveedor(textNombre.getText(), 
 							Integer.valueOf(textCodigo.getText()), Integer.valueOf(textTelefono.getText()),
 							textDireccion.getText());
-					
+					limpiarCampoTexto();
 					initDataBindings();
+					 crudProveedorViewController.salvarDatos();
+					 crudProveedorViewController.guardaDatosTextoPlano();
+						crudProveedorViewController.guardarArchivoLog("Se ha modificado el proveedor: "+proveedorSeleccionado.getNombreProveedor(),
+								2, "ProveedorModificado");
 				}
 			}
 		});

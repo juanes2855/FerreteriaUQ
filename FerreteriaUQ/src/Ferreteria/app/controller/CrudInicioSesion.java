@@ -25,4 +25,25 @@ public class CrudInicioSesion {
 		return modelFactoryController.iniciarSesion(usuario, contrasenia);
 	}
 
+	public void escribirEnLog(int nivel, String string) {
+	  modelFactoryController.guardarLog("El usuario no existe"+ string, nivel, "UsuarioNoExiste");	
+	}
+
+	public void escribirEnLog(String mensaje, int nivel, String accion) {
+	 modelFactoryController.guardarLog(mensaje, nivel, accion);
+	}
+
+	public void guardarRespaldoXml() {
+		modelFactoryController.guardarRespaldoXml();
+	}
+
+	public void guardarRespaldoBinario() {
+		modelFactoryController.guardarRespaldoBinario();
+	}
+
+	public void guardarRespaldoCompras() throws IOException {
+		modelFactoryController.guardarRespaldoCompras();
+
+	}
+
 }

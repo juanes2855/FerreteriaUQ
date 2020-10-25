@@ -321,13 +321,18 @@ public class CompraView extends Composite {
 						compra.setFactura_Compra(factura_compra);
 
 						crudCompraViewController.crearCompra(compra);
+						limpiarCampos();
+						initDataBindings();
+						crudCompraViewController.salvarDatos();
+						crudCompraViewController.guardarTextPlano();
+						crudCompraViewController.guardarArchivoLog("Nueva compra Hecha", 2, "NuevaCompra");
 					} catch (yaExiste e1) {
-						JOptionPane.showMessageDialog(null, "El código de la compra ya existe");;
+						JOptionPane.showMessageDialog(null, "El código de la compra ya existe");
+						crudCompraViewController.guardarArchivoLog("El codigo ya existe", 1, "CodigoRepetido");
 					} catch (NumberFormatException e2) {
 						System.out.println(e2);
 					}
-					limpiarCampos();
-					initDataBindings();
+					
 				}else{
 					JOptionPane.showMessageDialog(null, "Debe llenar todos los campos y seleccionar un empleado");
 				}

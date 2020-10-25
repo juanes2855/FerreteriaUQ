@@ -31,6 +31,7 @@ public class InicioSesion extends ApplicationWindow {
 
 	private Text textUsuario;
 	private Text textContrasenia;
+	String usuario= "";
 	
 	CrudInicioSesion crudInicioSesion= new CrudInicioSesion();
 	
@@ -76,16 +77,19 @@ public class InicioSesion extends ApplicationWindow {
 		btnIniciarSesin.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				String usuario = textUsuario.getText();
+				usuario = textUsuario.getText();
 				String contrasenia = textContrasenia.getText();
 				
 				boolean inicio;
 				try{
 					inicio = crudInicioSesion.iniciarSesion(usuario, contrasenia);
 					if(inicio){
+						crudInicioSesion.escribirEnLog("Inicio de Sesion del usuario: "+ usuario, 1, "InicioSesion");
+						crudInicioSesion.guardarRespaldoXml();
+						crudInicioSesion.guardarRespaldoBinario();
+						crudInicioSesion.guardarRespaldoCompras();
 						Display display = Display.getDefault();
-						Realm.runWithDefault(SWTObservables.getRealm(display), new Runnable() {
-							
+						Realm.runWithDefault(SWTObservables.getRealm(display), new Runnable() {					
 							@Override
 							public void run() {
 								Display display = Display.getDefault();
@@ -95,12 +99,12 @@ public class InicioSesion extends ApplicationWindow {
 									public void run() {
 										try{
 											close();
-											//windowInicioSesion.close();
 											FerreteriaView ferreteriaView = new FerreteriaView();
 											ferreteriaView.setBlockOnOpen(true);
 											ferreteriaView.open();
 											
 											Display.getCurrent().dispose();
+											crudInicioSesion.escribirEnLog("Cierre de sesión del usuario: "+usuario, 1, "CierreSesión");
 										}catch (Exception e){
 											System.out.println("Falla aqui "+ e);
 										}
@@ -116,7 +120,7 @@ public class InicioSesion extends ApplicationWindow {
 				System.out.println(e1);
 			}catch (UsuarioExcepcion e1){
 				JOptionPane.showMessageDialog(null,"Usuario no existe");
-				//crudInicioSesion.escribirEnLog(1, "Usuario no existe: "+usuario);
+				crudInicioSesion.escribirEnLog(1, usuario);
 			}
 			}
 		});
@@ -141,6 +145,7 @@ public class InicioSesion extends ApplicationWindow {
 		} catch (Exception e) {
 			//System.out.println("No olvidar "+ e);
 			JOptionPane.showMessageDialog(null, "Cierre exitoso");
+	
 		}
 	}
 
@@ -160,6 +165,14 @@ public class InicioSesion extends ApplicationWindow {
 	@Override
 	protected Point getInitialSize() {
 		return new Point(450, 427);
+	}
+
+	public String getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(String usuario) {
+		this.usuario = usuario;
 	}
 }
 

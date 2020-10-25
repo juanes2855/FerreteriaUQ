@@ -15,6 +15,8 @@ public class Factura_Compra implements Serializable {
 		this.cantidadCompra = cantidadCompra;
 		this.totalCompra = totalCompra;
 	}
+	public Factura_Compra(){
+	}
 
 	public int getNumeroFactura() {
 		return numeroFactura;

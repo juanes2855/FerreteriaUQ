@@ -1,5 +1,7 @@
 package Ferreteria.app.Aplication;
 
+import javax.swing.JOptionPane;
+
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.swt.widgets.Display;
@@ -28,15 +30,10 @@ public class FerreteriaAplicacion {
 							inicioSesion.open();
 							inicioSesion.setBlockOnOpen(true);
 							inicioSesion.open();
-
-//							FerreteriaView ferreteriaView = new FerreteriaView();
-//
-//							ferreteriaView.open();
-//							ferreteriaView.setBlockOnOpen(true);
-//							ferreteriaView.open();
+						
 							Display.getCurrent().dispose();
 						} catch (Exception e) {
-							e.printStackTrace();
+							JOptionPane.showMessageDialog(null, "Cierre con exito");;
 						}
 					}
 				});

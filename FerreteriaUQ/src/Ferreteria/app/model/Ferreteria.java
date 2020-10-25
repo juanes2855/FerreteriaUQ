@@ -18,11 +18,11 @@ public class Ferreteria implements Serializable, IFerreteria {
 	private Proveedor proveedor;
 	private ArrayList<Empleado> listaEmpleados;
 	private ArrayList<Producto> listaProductos;
-	private ArrayList<Producto> listaProductosOfProveedor;
 	private ArrayList<Proveedor> listaProveedor;
 	private ArrayList<Compra> listaCompras;
 	private ArrayList<Factura_Compra> listaFacturas;
 	private ArrayList<Detalle_Inventario>listaObjetosAcomprar;
+	ArrayList<Usuario> listaUsuario= new ArrayList<Usuario>();
 
 
 	public Ferreteria(String nombreFerreteria, String direccionFerreteria, int telefonoFerreteria) {
@@ -237,7 +237,8 @@ public class Ferreteria implements Serializable, IFerreteria {
 			getListaCompras().add(compraNueva);
 			getListaFacturas().add(compraNueva.getFactura_Compra());
 			for (int i = 0; i < compraNueva.getProductosCompra().size(); i++) {
-				inventario.anadirDetalleInventario(compraNueva.getCantidadCompra(), compraNueva.getProductosCompra().get(i));
+				inventario.anadirDetalleInventario(compraNueva.getCantidadCompra(), 
+				compraNueva.getProductosCompra().get(i));
 				crearProducto(compraNueva.getProductosCompra().get(i));
 			}
 		}
@@ -363,5 +364,4 @@ public class Ferreteria implements Serializable, IFerreteria {
 	public void limpiarLista() {
 		listaObjetosAcomprar.clear();
 	}
-
 }

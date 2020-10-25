@@ -30,6 +30,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import Ferreteria.app.controller.ModelFactoryController;
+import Ferreteria.app.Excepciones.numeroErroneo;
 import Ferreteria.app.Excepciones.yaExiste;
 import Ferreteria.app.controller.CrudEmpleadoViewController;
 import Ferreteria.app.model.Ferreteria;
@@ -91,7 +92,10 @@ public class EmpleadoView extends Composite {
 					flag = crudEmpleadoViewController.eliminarEmpleado(empleadoSeleccionado.getCodigoEmpleado());
 					limpiarCampoTexto();
 					initDataBindings();
-
+					crudEmpleadoViewController.salvarDatos();
+					crudEmpleadoViewController.guardaTextoPlano();
+					crudEmpleadoViewController.guardarArchivoLog("Se ha eliminado el empleado: "+ empleadoSeleccionado.getNombreEmpleado(), 
+							2, "EmpleadoEliminado");
 					if (flag == true) {
 						JOptionPane.showMessageDialog(null, "El empleado se elimino con exito");
 					} else {
@@ -264,12 +268,17 @@ public class EmpleadoView extends Composite {
 						crudEmpleadoViewController.crearEmpleado(empleadoNuevo);
 						initDataBindings();
 						limpiarCampoTexto();
+						crudEmpleadoViewController.salvarDatos();
+						crudEmpleadoViewController.guardaTextoPlano();
+						crudEmpleadoViewController.guardarArchivoLog("Se ha creado el empleado: "+ empleadoNuevo.getNombreEmpleado(),1,"NuevoEmpleado");
 					} catch (yaExiste e1) {
 						JOptionPane.showMessageDialog(null, "El empleado ya existe", null, JOptionPane.WARNING_MESSAGE,
 								null);
-					} catch (NumberFormatException e2) {
+						crudEmpleadoViewController.guardarArchivoLog("El emplado ya existe", 1, "YaExisteEmpleado");
+					} catch (numeroErroneo e2) {
 						JOptionPane.showMessageDialog(null, "No se aceptan letras en código ó salario", null,
 								JOptionPane.WARNING_MESSAGE, null);
+						crudEmpleadoViewController.guardarArchivoLog("Datos Introducidos erroneos", 1, "DatosErroneos");
 					}
 
 				}
@@ -289,7 +298,10 @@ public class EmpleadoView extends Composite {
 							textCargoEmpleado.getText(), Integer.valueOf(textCodigoEmpleado.getText()),
 							textDireccionEmpleado.getText(), Double.valueOf((textSalarioEmpleado.getText())));
 					initDataBindings();
-
+					crudEmpleadoViewController.salvarDatos();
+					crudEmpleadoViewController.guardaTextoPlano();
+					crudEmpleadoViewController.guardarArchivoLog("Se hizo una modificación en el empleado: "+ empleadoSeleccionado.getNombreEmpleado()
+					, 1, "ModificaciónEmpleado");
 				}
 			}
 		});

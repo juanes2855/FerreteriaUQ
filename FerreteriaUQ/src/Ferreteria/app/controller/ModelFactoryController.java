@@ -1,12 +1,15 @@
 package Ferreteria.app.controller;
 
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import Ferreteria.app.Excepciones.UsuarioExcepcion;
+import Ferreteria.app.Excepciones.entradaDedatosErronea;
 import Ferreteria.app.Excepciones.soloUnProveedor;
 import Ferreteria.app.Excepciones.yaExiste;
+import Ferreteria.app.Persistencia.ArchivoUtil;
 import Ferreteria.app.Persistencia.Persistencia;
 import Ferreteria.app.model.Compra;
 import Ferreteria.app.model.Detalle_Inventario;
@@ -16,14 +19,13 @@ import Ferreteria.app.model.Ferreteria;
 import Ferreteria.app.model.Producto;
 import Ferreteria.app.model.Proveedor;
 import Ferreteria.app.model.Usuario;
+import Ferreteria.app.view.InicioSesion;
 
 
 public class ModelFactoryController {
 	Ferreteria ferreteria;
 
 	private static class SingletonHolder {
-		// El constructor de Singleton puede ser llamado desde aquí al ser
-		// protected
 		private final static ModelFactoryController eINSTANCE = new ModelFactoryController();
 
 	}
@@ -33,12 +35,19 @@ public class ModelFactoryController {
 	}
 
 	public ModelFactoryController() {
-		ferreteria = new Ferreteria("JJ", "123", 312);
-
-		inicializarDatos();
+        
+	 // cargarDatosDesdeArchivo();
+      //cargarResourceBinario();
+      cargarResourceXML();
+        if(ferreteria== null){
+        	inicializarDatos();
+        }
+   
 	}
 
 	private void inicializarDatos() {
+		ferreteria = new Ferreteria("JJ", "123", 312);
+		//ferreteria= new Ferreteria();
 
 		Empleado empleado = new Empleado();
 		empleado.setNombreEmpleado("Juan");
@@ -48,19 +57,6 @@ public class ModelFactoryController {
 		empleado.setSalario(1000000);
 		ferreteria.getListaEmpleados().add(empleado);
 
-		Proveedor proveedor2 = new Proveedor();
-		proveedor2.setCodigoProveedor(2345);
-		proveedor2.setDireccionProveedor("Bogotá");
-		proveedor2.setNombreProveedor("Ferreteria reina");
-		proveedor2.setTelefonoProveedor(7440011);
-		ferreteria.getListaProveedor().add(proveedor2);
-
-		Proveedor proveedor = new Proveedor();
-		proveedor.setCodigoProveedor(987);
-		proveedor.setDireccionProveedor("Cali");
-		proveedor.setNombreProveedor("Cat");
-		proveedor.setTelefonoProveedor(7463333);
-		ferreteria.getListaProveedor().add(proveedor);
 
 		Proveedor proveedo3 = new Proveedor();
 		proveedo3.setCodigoProveedor(104);
@@ -77,52 +73,30 @@ public class ModelFactoryController {
 		 producto2.setProveedorAsociado(proveedo3);
 		 ferreteria.getListaProductos().add(producto2);
 		
-		 Producto producto = new Producto();
-		 producto.setCategoria("De mano");
-		 producto.setCodigoProducto(213);
-		 producto.setProveedorAsociado(proveedor);
-		 producto.setNombreProducto("Hombre Solo");
-		 producto.setPrecio(47000);
-		 ferreteria.getListaProductos().add(producto);
+	
 		 
-		 Factura_Compra factura_Compra= new Factura_Compra(1, 2, 94000);
-		 ferreteria.getListaFacturas().add(factura_Compra);
-		 
-		 Compra compra = new Compra();
-		 compra.setCantidadCompra(2);
-		 compra.setCodigoCompra(1);
-		 compra.setEmpleadoAsociado(empleado);
-		 compra.setFactura_Compra(factura_Compra);
-		 compra.setFechaCompra("21/10/2020");
-		 compra.setProveedorAsociado(proveedor);
-		 ferreteria.getListaCompras().add(compra);
-		 
-		 
-		 //proveedo3.getProductosProveedor().add(producto);
-		// ferreteria.obtenerListadeProductosProveedor(proveedo3).add(producto);
-
-//		Producto producto3 = new Producto();
-//		producto3.setNombreProducto("Tornillo");
-//		producto3.setCategoria("De mano");
-//		producto3.setCodigoProducto(12);
-//		producto3.setPrecio(4056);
-//		producto3.setProveedorAsociado(proveedor);
-//		ferreteria.getProveedor().getProductosProveedor().add(producto3);
-
-		/*
-		 * Producto producto4 = new Producto();
-		 * producto4.setNombreProducto("Destornillador");
-		 * producto4.setCategoria("De mano"); producto4.setCodigoProducto(4567);
-		 * producto4.setPrecio(12000); producto4.setMarca("cat");
-		 * ferreteria.getProveedor().getProductosProveedor().add(producto4);
-		 * 
-		 * Producto producto5 = new Producto();
-		 * producto5.setNombreProducto("Martillo");
-		 * producto5.setCategoria("De mano"); producto5.setCodigoProducto(1234);
-		 * producto5.setPrecio(50000); producto5.setMarca("cat");
-		 * ferreteria.getProveedor().getProductosProveedor().add(producto5);
-		 */
-
+	}
+	
+	public void guardardatos(){
+		
+		try{
+			Persistencia.guardarEmpleadox(getFerreteria().getListaEmpleados());
+			Persistencia.guardarProducto(getFerreteria().getListaProductos());
+			Persistencia.guardarProveedores(getFerreteria().getListaProveedor());
+			Persistencia.guardarCompra(getFerreteria().getListaCompras());
+		}catch(IOException e){
+			System.out.println(e);
+		}
+		
+		
+	}
+	public void cargarDatosDesdeArchivo() {
+		ferreteria = new Ferreteria("Ferreteria", "Calarcá", 7433333);
+		try {
+			Persistencia.cargarDatosArchivos(getFerreteria());
+		} catch (IOException e) {
+			System.out.println(e);
+		}
 	}
 
 	public Ferreteria getFerreteria() {
@@ -215,7 +189,7 @@ public class ModelFactoryController {
 		
 	}
 
-    public boolean iniciarSesion(String usuario, String contrasenia) throws FileNotFoundException, IOException, UsuarioExcepcion {
+    public boolean iniciarSesion(String usuario, String contrasenia) throws entradaDedatosErronea, IOException, UsuarioExcepcion {
 		
 		if(validarUsuario(usuario,contrasenia)) {
 			return true;
@@ -224,18 +198,46 @@ public class ModelFactoryController {
 		}
 		
 	}
-    private boolean validarUsuario(String usuario, String contrasenia) throws FileNotFoundException, IOException {
-    	return true;
+    private boolean validarUsuario(String usuario, String contrasenia) throws FileNotFoundException, IOException{
+    	return Persistencia.validarUsuario(usuario, contrasenia);
     }
-//		ArrayList<Usuario> usuarios = Persistencia.cargarUsuarios(Persistencia.RUTA_ARCHIVO_USUARIOS);
-//		
-//		for (int indiceUsuario = 0; indiceUsuario < usuarios.size(); indiceUsuario++) {
-//			Usuario usuarioAux = usuarios.get(indiceUsuario);
-//			if(usuarioAux.getUsuario().equalsIgnoreCase(usuario) && usuarioAux.getContrasenia().equalsIgnoreCase(contrasenia)) {
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
+    
+    
+    public void cargarResourceBinario(){
+    	ferreteria = Persistencia.cargarRecursoFerreteriaBinario();
+    }
+    public void guardarRespaldoXml(){
+    	Persistencia.guardarRespaldoXML(ferreteria);
+    }
+    
+    public void guardarResourceBinario(){
+    	Persistencia.guardarRecursoFerreteriaBinario(ferreteria);
+    }
+    
+    public void cargarResourceXML(){
+    	ferreteria = Persistencia.cargarRecursoFerreteriaXML();
+    }
+    
+    public void guardarResourceXML(){
+    	Persistencia.guardarRecursoFerreteriaXML(ferreteria);
+    }
+
+    public void salvarDatos() {
+    	guardarResourceBinario();
+    	guardarResourceXML();
+    }
+    
+    public void guardarLog(String mensajeLog, int nivel, String accion){
+    	Persistencia.guardaRegistroLog(mensajeLog, nivel, accion);
+    }
+
+	public void guardarRespaldoBinario() {
+		Persistencia.guardarRespaldoBinario(ferreteria);	
+	}
+	public void guardarRespaldoCompras() throws IOException{
+		Persistencia.respaldoCompra(getFerreteria().getListaCompras());
+	}
 	
+    
+
 }

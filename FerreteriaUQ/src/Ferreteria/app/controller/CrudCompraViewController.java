@@ -59,4 +59,18 @@ public class CrudCompraViewController {
 		modelFactoryController.limpiarLista();
 		
 	}
+
+	public void salvarDatos() {
+		modelFactoryController.salvarDatos();
+	}
+
+	public void guardarArchivoLog(String mensaje, int nivel, String accion) {
+		modelFactoryController.guardarLog(mensaje, nivel, accion);	
+	}
+
+	public void guardarTextPlano() {
+		modelFactoryController.guardardatos();
+		
+	}
+	
 }

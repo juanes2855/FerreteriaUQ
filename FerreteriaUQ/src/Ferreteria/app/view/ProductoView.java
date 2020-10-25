@@ -96,7 +96,11 @@ public class ProductoView extends Composite {
 					flag = crudProductoViewController.eliminarProducto(productoSeleccionado.getCodigoProducto());
 					limpiarCampoTexto();
 					initDataBindings();
-
+					crudProductoViewController.salvarDatos();
+					crudProductoViewController.guardaTextoPlano();
+					crudProductoViewController.guardarArchivoLog("Se ha eliminado el producto: "+productoSeleccionado.getNombreProducto(),
+							2, "ProductoEliminado");
+					
 					if (flag == true) {
 						JOptionPane.showMessageDialog(null, "El producto se elimino con exito");
 					} else {
@@ -269,10 +273,16 @@ public class ProductoView extends Composite {
 						crudProductoViewController.crearProducto(productoNuevo);
 						initDataBindings();
 						limpiarCampoTexto();
+						crudProductoViewController.salvarDatos();
+					    crudProductoViewController.guardaTextoPlano();
+						crudProductoViewController.guardarArchivoLog("Se ha añadido el producto: "+productoNuevo.getNombreProducto(),
+								2, "ProductoAñadido");
 
 					} catch (yaExiste e1) {
 						JOptionPane.showMessageDialog(null, "El producto ya existe", null, JOptionPane.WARNING_MESSAGE,
 								null);
+						crudProductoViewController.guardarArchivoLog("El producto: "+productoNuevo.getNombreProducto()+" ya existe",
+								1, "ProductoRepetido");
 					} catch (NumberFormatException e2) {
 						JOptionPane.showMessageDialog(null, "No se aceptan letras en código ó precio", null,
 								JOptionPane.WARNING_MESSAGE, null);
@@ -294,6 +304,10 @@ public class ProductoView extends Composite {
 							textCategoriaProd.getText(), proveedorSeleccionadoCombo);
 					limpiarCampoTexto();
 					initDataBindings();
+					crudProductoViewController.salvarDatos();
+					crudProductoViewController.guardaTextoPlano();
+					crudProductoViewController.guardarArchivoLog("Se ha actualizado el producto: "+productoSeleccionado.getNombreProducto(),
+							2, "ProductoActualizado");
 				}
 			}
 		});
