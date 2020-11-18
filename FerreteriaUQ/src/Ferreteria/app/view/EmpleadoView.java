@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import Ferreteria.app.controller.ModelFactoryController;
 import Ferreteria.app.Excepciones.EstaVinculado;
+import Ferreteria.app.Excepciones.nadaSeleccionado;
 import Ferreteria.app.Excepciones.numeroErroneo;
 import Ferreteria.app.Excepciones.yaExiste;
 import Ferreteria.app.controller.CrudEmpleadoViewController;
@@ -82,7 +83,7 @@ public class EmpleadoView extends Composite {
 
 			}
 		});
-		btnNuevoEmpleado.setBounds(504, 34, 173, 35);
+		btnNuevoEmpleado.setBounds(540, 34, 173, 35);
 		btnNuevoEmpleado.setText("Nuevo Empleado");
 
 		Button btnEliminarempleado = new Button(grpAcciones, SWT.NONE);
@@ -126,7 +127,7 @@ public class EmpleadoView extends Composite {
 				}	
 			}
 		});
-		btnEliminarempleado.setBounds(701, 34, 173, 35);
+		btnEliminarempleado.setBounds(735, 34, 173, 35);
 		btnEliminarempleado.setText("EliminarEmpleado");
 
 		Label lblBusqueda = new Label(grpAcciones, SWT.NONE);
@@ -222,6 +223,35 @@ public class EmpleadoView extends Composite {
 		
 		text_busqueda = new Text(grpAcciones, SWT.BORDER);
 		text_busqueda.setBounds(111, 38, 223, 31);
+		
+		Button btnConsulta = new Button(grpAcciones, SWT.NONE);
+		btnConsulta.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if(empleadoSeleccionado!=null){
+					String salida="";
+					salida+="Nombre: "+ empleadoSeleccionado.getNombreEmpleado()  +"\n";
+					salida+="Código: "+ empleadoSeleccionado.getCodigoEmpleado()  +"\n";
+					salida+="Cargo: "+ empleadoSeleccionado.getCargo()  +"\n";
+					salida+="Salario: "+ empleadoSeleccionado.getSalario()  +"\n";
+					salida+="Dirección: "+ empleadoSeleccionado.getDireccion() +"\n";
+					
+					JOptionPane.showMessageDialog(null, salida);
+				}else{
+					
+					try {
+						throw new nadaSeleccionado();
+					} catch (nadaSeleccionado e1) {
+						JOptionPane.showMessageDialog(null, "Debe seleccionar un empleado");
+						crudEmpleadoViewController.guardarArchivoLog("No selecciono un empleado ",
+								1, "NadaSeleccionado");
+					}
+				}
+				
+			}
+		});
+		btnConsulta.setBounds(347, 34, 173, 35);
+		btnConsulta.setText("Consulta");
 
 		text_busqueda.addModifyListener(new ModifyListener() {
 

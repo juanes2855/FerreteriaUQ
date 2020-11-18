@@ -43,9 +43,7 @@ public class Ferreteria implements Serializable, IFerreteria {
 
 	}
 	
-//	public ArrayList<Producto> obtenerListadeProductosProveedor(Proveedor proveedor){
-//	    	return proveedor.getProductosProveedor();
-//	}
+
 
 	@Override
 	public void crearEmpleado(Empleado nuevoEmpleado) throws yaExiste {

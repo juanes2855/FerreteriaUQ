@@ -6,6 +6,7 @@ import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.swt.widgets.Composite;
 
 import Ferreteria.app.Excepciones.EstaVinculado;
+import Ferreteria.app.Excepciones.nadaSeleccionado;
 import Ferreteria.app.Excepciones.numeroErroneo;
 import Ferreteria.app.Excepciones.yaExiste;
 import Ferreteria.app.controller.CrudProveedorViewController;
@@ -78,7 +79,7 @@ public class ProveedorView extends Composite {
 				limpiarCampoTexto();
 			}
 		});
-		btnNuevoProveedor.setBounds(497, 40, 180, 35);
+		btnNuevoProveedor.setBounds(530, 37, 180, 32);
 		btnNuevoProveedor.setText("Nuevo Proveedor");
 
 		Button btnEliminarProveedor = new Button(grpAcciones, SWT.NONE);
@@ -125,7 +126,7 @@ public class ProveedorView extends Composite {
 			}
 		});
 
-		btnEliminarProveedor.setBounds(702, 40, 180, 35);
+		btnEliminarProveedor.setBounds(716, 35, 180, 34);
 		btnEliminarProveedor.setText("Eliminar Proveedor");
 
 		Group grpListaProveedores = new Group(this, SWT.NONE);
@@ -271,6 +272,32 @@ public class ProveedorView extends Composite {
 		btnModificarProveedor.setText("Modificar Proveedor");
 		text_busqueda = new Text(grpAcciones, SWT.BORDER);
 		text_busqueda.setBounds(111, 38, 223, 31);
+		
+		Button btnConsultar = new Button(grpAcciones, SWT.NONE);
+		btnConsultar.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				
+				if(proveedorSeleccionado!= null){
+					String salida="";
+					salida+="Nombre: "+ proveedorSeleccionado.getNombreProveedor()  +"\n";
+					salida+="Código: "+ proveedorSeleccionado.getCodigoProveedor() +"\n";
+					salida+="Telefono: "+ proveedorSeleccionado.getTelefonoProveedor()  +"\n";
+					salida+="Dirección: "+ proveedorSeleccionado .getDireccionProveedor() +"\n";
+				
+					JOptionPane.showMessageDialog(null, salida);
+				}else{
+					try {
+						throw new nadaSeleccionado();
+					} catch (nadaSeleccionado e1) {
+						JOptionPane.showMessageDialog(null, "Debe seleccionar un proveedor");
+						crudProveedorViewController.guardarArchivoLog("No selecciono el proveedor", 1, "NadaSeleccionado");
+					}
+				}
+			}
+		});
+		btnConsultar.setBounds(340, 37, 180, 32);
+		btnConsultar.setText("Consultar");
 
 		text_busqueda.addModifyListener(new ModifyListener() {
 

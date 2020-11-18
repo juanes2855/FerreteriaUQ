@@ -6,6 +6,7 @@ import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.swt.widgets.Composite;
 
 import Ferreteria.app.Excepciones.EstaVinculado;
+import Ferreteria.app.Excepciones.nadaSeleccionado;
 import Ferreteria.app.Excepciones.numeroErroneo;
 import Ferreteria.app.Excepciones.yaExiste;
 import Ferreteria.app.controller.CrudProductoViewController;
@@ -77,7 +78,7 @@ public class ProductoView extends Composite {
 				limpiarCampoTexto();
 			}
 		});
-		btnNuevoProducto.setBounds(523, 32, 167, 35);
+		btnNuevoProducto.setBounds(523, 38, 167, 31);
 		btnNuevoProducto.setText("Nuevo Producto");
 
 		Button btnEliminarProducto = new Button(grpAcciones, SWT.NONE);
@@ -118,7 +119,7 @@ public class ProductoView extends Composite {
 		    	}	
 			}
 		});
-		btnEliminarProducto.setBounds(717, 32, 167, 35);
+		btnEliminarProducto.setBounds(717, 38, 167, 31);
 		btnEliminarProducto.setText("Eliminar Producto");
 
 		Group grpListaProductos = new Group(this, SWT.NONE);
@@ -212,6 +213,36 @@ public class ProductoView extends Composite {
 		Label lblBusqueda = new Label(grpAcciones, SWT.NONE);
 		lblBusqueda.setBounds(10, 42, 81, 25);
 		lblBusqueda.setText("Busqueda");
+		
+		Button btnConsultar = new Button(grpAcciones, SWT.NONE);
+		btnConsultar.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				
+				if(productoSeleccionado != null){
+					String salida="";
+					salida += "Nombre: "+ productoSeleccionado.getNombreProducto()+ "\n";
+					salida += "Categoria: "+ productoSeleccionado.getCategoria()+ "\n";
+					salida += "Codigo: "+ productoSeleccionado.getCodigoProducto()+"\n";
+					salida += "Precio: "+ productoSeleccionado.getPrecio()+ "\n";
+					salida += "Proveedor: "+ productoSeleccionado.getProveedorAsociado().getNombreProveedor()+"\n";
+					JOptionPane.showMessageDialog(null, salida);
+					
+				}
+				else{
+					try {
+						throw new nadaSeleccionado();
+					} catch (nadaSeleccionado e1) {
+						JOptionPane.showMessageDialog(null, "Debe seleccionar un producto");
+						crudProductoViewController.guardarArchivoLog("No ha selecionado el producto ",
+								1, "NadaSeleccionado");
+					}
+					
+				}
+			}
+		});
+		btnConsultar.setBounds(340, 38, 167, 31);
+		btnConsultar.setText("Consultar");
 
 		text_busqueda.addModifyListener(new ModifyListener() {
 
@@ -268,7 +299,7 @@ public class ProductoView extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 
-				if (verificarCamposVacios() == true) {
+				if (verificarCamposVacios() == true && proveedorSeleccionadoCombo !=null) {
 
 					Producto productoNuevo = new Producto();
 
@@ -299,6 +330,9 @@ public class ProductoView extends Composite {
 						crudProductoViewController.guardarArchivoLog("Valor erroneo ingresado no se aceptan letras en codigo o precio ",
 								1, "DatoErroneo");
 					}
+				}else{
+					JOptionPane.showMessageDialog(null, "Debe completar todos los campos", null,
+							JOptionPane.WARNING_MESSAGE, null);
 				}
 			}
 		});
@@ -360,6 +394,7 @@ public class ProductoView extends Composite {
 			return true;
 		}
 	}
+	
 
 	@Override
 	protected void checkSubclass() {

@@ -88,6 +88,8 @@ public class InicioSesion extends ApplicationWindow {
 						crudInicioSesion.guardarRespaldoXml();
 						crudInicioSesion.guardarRespaldoBinario();
 						crudInicioSesion.guardarRespaldoCompras();
+						
+						
 						Display display = Display.getDefault();
 						Realm.runWithDefault(SWTObservables.getRealm(display), new Runnable() {					
 							@Override
@@ -99,10 +101,17 @@ public class InicioSesion extends ApplicationWindow {
 									public void run() {
 										try{
 											close();
-											FerreteriaView ferreteriaView = new FerreteriaView();
-											ferreteriaView.setBlockOnOpen(true);
-											ferreteriaView.open();
+											if(usuario.equalsIgnoreCase("admin")){
+												FerreteriaView ferreteriaView = new FerreteriaView();
+												ferreteriaView.setBlockOnOpen(true);
+												ferreteriaView.open();
+											}else if(usuario.equalsIgnoreCase("empleado")){
+												FerreteriaView2 ferreteriaView2 = new FerreteriaView2();
+												ferreteriaView2.setBlockOnOpen(true);
+												ferreteriaView2.open();
+											}	
 											
+
 											Display.getCurrent().dispose();
 											crudInicioSesion.escribirEnLog("Cierre de sesión del usuario: "+usuario, 1, "CierreSesión");
 										}catch (Exception e){
