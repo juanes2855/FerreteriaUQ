@@ -69,7 +69,7 @@ public class Ferreteria implements Serializable, IFerreteria {
 			empleado.setDireccion(direccion);
 			empleado.setNombreEmpleado(nombreEmpleado);
 			empleado.setSalario(salario);
-
+//aqui
 		}else if(empleadoExistente != null){
 			throw new yaExiste("Ya existe el empleado");
 		}
