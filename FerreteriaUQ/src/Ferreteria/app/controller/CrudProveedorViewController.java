@@ -20,9 +20,9 @@ public class CrudProveedorViewController {
 	}
 
 	public void actualizarProveedor(String nombreProveedor, int codigoProveedor, int telefonoProveedor,
-			String direccionProveedor) {
+			String direccionProveedor, int codigoAnterior) throws yaExiste {
 		modelFactoryController.actualizarProveedor(nombreProveedor, codigoProveedor, telefonoProveedor,
-				direccionProveedor);
+				direccionProveedor, codigoAnterior);
 	}
 	
 	public Boolean eliminarProveedor(int codigoProveedor){
@@ -59,6 +59,10 @@ public class CrudProveedorViewController {
 	public void guardaDatosTextoPlano() {
 	modelFactoryController.guardardatos();
 		
+	}
+
+	public boolean consultarSiExiste(Proveedor proveedorSeleccionado) {
+		return modelFactoryController.consultarSiExite(proveedorSeleccionado);
 	}
 
 }

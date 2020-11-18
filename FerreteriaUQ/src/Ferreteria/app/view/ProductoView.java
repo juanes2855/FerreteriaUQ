@@ -5,6 +5,8 @@ import javax.swing.JOptionPane;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.swt.widgets.Composite;
 
+import Ferreteria.app.Excepciones.EstaVinculado;
+import Ferreteria.app.Excepciones.numeroErroneo;
 import Ferreteria.app.Excepciones.yaExiste;
 import Ferreteria.app.controller.CrudProductoViewController;
 import Ferreteria.app.controller.ModelFactoryController;
@@ -41,16 +43,7 @@ import Ferreteria.app.model.Proveedor;
 
 public class ProductoView extends Composite {
 
-	/*
-	 * Realizar esta clase a partir de la lista de todos los productos, se
-	 * tienen dos listas aparte uno de productos comprados y no comprados
-	 * cambiar anexar los productos un estado que cuando se encuentre sin
-	 * comprar y cambia cuando lo compren Esta vista le va a añadir productos es
-	 * a un proveedor seleccionado
-	 * 
-	 * Falta ----- añadirle a la tabla el estado reestructurar la clase producto
-	 */
-
+	
 	CrudProductoViewController crudProductoViewController = new CrudProductoViewController();
 	Ferreteria ferreteria = crudProductoViewController.getFerreteria();
 	ModelFactoryController model = new ModelFactoryController();
@@ -63,9 +56,9 @@ public class ProductoView extends Composite {
 	private Text textCategoriaProd;
 	private TableViewer tableProductos;
 	private Text text_busqueda;
-
+    private int codigoAnterior;
 	private String busquedad = "";
-
+    String [] botones={"  Si", "  No"};
 	Producto productoSeleccionado;
 	Proveedor proveedorSeleccionadoCombo;
 	private ComboViewer comboViewerMarca;
@@ -93,6 +86,10 @@ public class ProductoView extends Composite {
 			public void widgetSelected(SelectionEvent e) {
 				Boolean flag = false;
 				if (productoSeleccionado != null) {
+					if(!crudProductoViewController.consultarSiExiste(productoSeleccionado)){
+						int variable=JOptionPane.showOptionDialog (null, " Confirmar eliminación", "Confirmación", 
+								JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null/*icono*/, botones, botones[0]);
+				    if(variable==0){
 					flag = crudProductoViewController.eliminarProducto(productoSeleccionado.getCodigoProducto());
 					limpiarCampoTexto();
 					initDataBindings();
@@ -100,13 +97,25 @@ public class ProductoView extends Composite {
 					crudProductoViewController.guardaTextoPlano();
 					crudProductoViewController.guardarArchivoLog("Se ha eliminado el producto: "+productoSeleccionado.getNombreProducto(),
 							2, "ProductoEliminado");
-					
+				    }else{
+				    	flag=false;
+				    }
 					if (flag == true) {
 						JOptionPane.showMessageDialog(null, "El producto se elimino con exito");
 					} else {
 						JOptionPane.showMessageDialog(null, "No se pudo eliminar");
 					}
 				}
+					else{
+						try {
+							throw new EstaVinculado("Esta Vinculado con una transacción");
+						} catch (EstaVinculado e1) {
+							crudProductoViewController.guardarArchivoLog("El producto seleccionado esta vinculado con una transacción: "+productoSeleccionado.getNombreProducto(),
+									2, "ProductoVinculado");	
+						}
+						
+					}
+		    	}	
 			}
 		});
 		btnEliminarProducto.setBounds(717, 32, 167, 35);
@@ -129,6 +138,7 @@ public class ProductoView extends Composite {
 				textCodigoProd.setText(Integer.toString(productoSeleccionado.getCodigoProducto()));
 				textPrecioProd.setText(Double.toString(productoSeleccionado.getPrecio()));
 				comboViewerMarca.setSelection(new StructuredSelection(productoSeleccionado.getProveedorAsociado()));
+				codigoAnterior= productoSeleccionado.getCodigoProducto();
 			}
 		});
 		table.setHeaderVisible(true);
@@ -286,6 +296,8 @@ public class ProductoView extends Composite {
 					} catch (NumberFormatException e2) {
 						JOptionPane.showMessageDialog(null, "No se aceptan letras en código ó precio", null,
 								JOptionPane.WARNING_MESSAGE, null);
+						crudProductoViewController.guardarArchivoLog("Valor erroneo ingresado no se aceptan letras en codigo o precio ",
+								1, "DatoErroneo");
 					}
 				}
 			}
@@ -299,15 +311,28 @@ public class ProductoView extends Composite {
 			public void widgetSelected(SelectionEvent e) {
 
 				if (productoSeleccionado != null) {
-					crudProductoViewController.actualizarProducto(textNombreProd.getText(),
-							Integer.valueOf(textCodigoProd.getText()), Double.valueOf(textPrecioProd.getText()),
-							textCategoriaProd.getText(), proveedorSeleccionadoCombo);
+					try {
+						crudProductoViewController.actualizarProducto(textNombreProd.getText(),
+								Integer.valueOf(textCodigoProd.getText()), Double.valueOf(textPrecioProd.getText()),
+								textCategoriaProd.getText(), proveedorSeleccionadoCombo, codigoAnterior);
+						crudProductoViewController.salvarDatos();
+						crudProductoViewController.guardaTextoPlano();
+						crudProductoViewController.guardarArchivoLog("Se ha actualizado el producto: "+productoSeleccionado.getNombreProducto(),
+								2, "ProductoActualizado");
+					} catch (numeroErroneo e1) {
+						JOptionPane.showMessageDialog(null, "No se aceptan letras en código ó precio", null,
+								JOptionPane.WARNING_MESSAGE, null);
+						crudProductoViewController.guardarArchivoLog("Valor erroneo ingresado no se aceptan letras en codigo o precio ",
+								1, "DatoErroneo");
+					} catch (yaExiste e4){
+						JOptionPane.showMessageDialog(null, "El producto ya existe", null, JOptionPane.WARNING_MESSAGE,
+								null);
+						crudProductoViewController.guardarArchivoLog("El codigo ya le pertenece a otro producto "+ " ya existe",
+								1, "ProductoRepetido");
+					}
 					limpiarCampoTexto();
 					initDataBindings();
-					crudProductoViewController.salvarDatos();
-					crudProductoViewController.guardaTextoPlano();
-					crudProductoViewController.guardarArchivoLog("Se ha actualizado el producto: "+productoSeleccionado.getNombreProducto(),
-							2, "ProductoActualizado");
+					
 				}
 			}
 		});

@@ -23,7 +23,7 @@ public class CrudCompraViewController {
 	}
 
 	public void modificarCompra(int codigoCompra, String fechaCompra, int cantidadCompra,
-			Factura_Compra facturaCompra) {
+			Factura_Compra facturaCompra) throws yaExiste {
 		modelFactoryController.modificarCompra(codigoCompra, fechaCompra, cantidadCompra, facturaCompra);
 	}
 	

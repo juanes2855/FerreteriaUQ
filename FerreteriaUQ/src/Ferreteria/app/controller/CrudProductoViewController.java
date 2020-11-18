@@ -21,8 +21,8 @@ public class CrudProductoViewController {
 	}
 
 	public void actualizarProducto(String nombreProducto, int codigoProducto, double precio, String categoria,
-			Proveedor proveedor) {
-		modelFactoryController.actualizarProducto(nombreProducto, codigoProducto, precio, categoria, proveedor);
+			Proveedor proveedor, int codigoAnterior) throws yaExiste {
+		modelFactoryController.actualizarProducto(nombreProducto, codigoProducto, precio, categoria, proveedor, codigoAnterior);
 	}
 	
 	public Boolean eliminarProducto(int codigoProducto){
@@ -51,5 +51,9 @@ public class CrudProductoViewController {
 	public void guardaTextoPlano() {
 	   modelFactoryController.guardardatos();
 		
+	}
+
+	public boolean consultarSiExiste(Producto productoSeleccionado) {
+		return modelFactoryController.consultarSiExite(productoSeleccionado);
 	}
 }

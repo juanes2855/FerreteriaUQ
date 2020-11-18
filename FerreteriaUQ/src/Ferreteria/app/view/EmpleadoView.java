@@ -30,6 +30,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import Ferreteria.app.controller.ModelFactoryController;
+import Ferreteria.app.Excepciones.EstaVinculado;
 import Ferreteria.app.Excepciones.numeroErroneo;
 import Ferreteria.app.Excepciones.yaExiste;
 import Ferreteria.app.controller.CrudEmpleadoViewController;
@@ -60,9 +61,10 @@ public class EmpleadoView extends Composite {
 	private Text textDireccionEmpleado;
 	private TableViewer tableViewerEmpleado;
 	private Text text_busqueda;
-
+	String [] botones = { "  Si", " No" };
 	private String busquedad = "";
 	Empleado empleadoSeleccionado;
+	private int codigoAnterior;
 
 	public EmpleadoView(Composite parent, int style) {
 		super(parent, style);
@@ -89,6 +91,10 @@ public class EmpleadoView extends Composite {
 			public void widgetSelected(SelectionEvent e) {
 				Boolean flag = false;
 				if (empleadoSeleccionado != null) {
+					if(!crudEmpleadoViewController.consultarSiExiste(empleadoSeleccionado)){
+						int variable=JOptionPane.showOptionDialog (null, " Confirmar eliminación", "Confirmación", 
+								JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null/*icono*/, botones, botones[0]);
+				    if(variable==0){
 					flag = crudEmpleadoViewController.eliminarEmpleado(empleadoSeleccionado.getCodigoEmpleado());
 					limpiarCampoTexto();
 					initDataBindings();
@@ -96,12 +102,28 @@ public class EmpleadoView extends Composite {
 					crudEmpleadoViewController.guardaTextoPlano();
 					crudEmpleadoViewController.guardarArchivoLog("Se ha eliminado el empleado: "+ empleadoSeleccionado.getNombreEmpleado(), 
 							2, "EmpleadoEliminado");
+				    }
+				    else{
+				    flag=false;
+				    }
 					if (flag == true) {
 						JOptionPane.showMessageDialog(null, "El empleado se elimino con exito");
 					} else {
-						JOptionPane.showMessageDialog(null, "No se pudo eliminar");
+						JOptionPane.showMessageDialog(null, "No se eliminó");
+					}
+				}else{
+					try{
+						throw new EstaVinculado("Esta Vinculado con una transacción");
+					}catch (EstaVinculado e4) {
+						crudEmpleadoViewController.guardarArchivoLog(
+								"El empleado seleccionado esta vinculado con una transacción: "
+										+ empleadoSeleccionado.getNombreEmpleado()+" ",
+								2, "EmpleadoVinculado");
+				JOptionPane.showMessageDialog(null, "No se pudo eliminar, el empleado esta relacionado con una "
+						+ "transacción.");
 					}
 				}
+				}	
 			}
 		});
 		btnEliminarempleado.setBounds(701, 34, 173, 35);
@@ -130,6 +152,7 @@ public class EmpleadoView extends Composite {
 				textCodigoEmpleado.setText(Integer.toString(empleadoSeleccionado.getCodigoEmpleado()));
 				textDireccionEmpleado.setText(empleadoSeleccionado.getDireccion());
 				textSalarioEmpleado.setText(Double.toString(empleadoSeleccionado.getSalario()));
+				codigoAnterior=empleadoSeleccionado.getCodigoEmpleado();
 			}
 		});
 		table.setLinesVisible(true);
@@ -274,7 +297,7 @@ public class EmpleadoView extends Composite {
 					} catch (yaExiste e1) {
 						JOptionPane.showMessageDialog(null, "El empleado ya existe", null, JOptionPane.WARNING_MESSAGE,
 								null);
-						crudEmpleadoViewController.guardarArchivoLog("El emplado ya existe", 1, "YaExisteEmpleado");
+						crudEmpleadoViewController.guardarArchivoLog("El empleado ya existe", 1, "YaExisteEmpleado");
 					} catch (numeroErroneo e2) {
 						JOptionPane.showMessageDialog(null, "No se aceptan letras en código ó salario", null,
 								JOptionPane.WARNING_MESSAGE, null);
@@ -292,16 +315,27 @@ public class EmpleadoView extends Composite {
 		btnActualizarEmpleado.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-
+	
 				if (empleadoSeleccionado != null) {
-					crudEmpleadoViewController.actualizarEmpleado(textNombreEmpleado.getText(),
-							textCargoEmpleado.getText(), Integer.valueOf(textCodigoEmpleado.getText()),
-							textDireccionEmpleado.getText(), Double.valueOf((textSalarioEmpleado.getText())));
+					try {
+						crudEmpleadoViewController.actualizarEmpleado(textNombreEmpleado.getText(),
+								textCargoEmpleado.getText(), Integer.valueOf(textCodigoEmpleado.getText()),
+								textDireccionEmpleado.getText(), Double.valueOf((textSalarioEmpleado.getText())), codigoAnterior);
+						        crudEmpleadoViewController.salvarDatos();
+						        crudEmpleadoViewController.guardaTextoPlano();
+						        crudEmpleadoViewController.guardarArchivoLog("Se hizo una modificación en el empleado: "+ empleadoSeleccionado.getNombreEmpleado()
+						, 1, "ModificaciónEmpleado");
+					} catch (numeroErroneo e1) {
+						JOptionPane.showMessageDialog(null, "No se aceptan letras en código ó salario", null,
+								JOptionPane.WARNING_MESSAGE, null);
+						crudEmpleadoViewController.guardarArchivoLog("Datos Introducidos erroneos", 1, "DatosErroneos");
+					} catch(yaExiste e2){
+						JOptionPane.showMessageDialog(null, "El empleado ya existe", null, JOptionPane.WARNING_MESSAGE,
+								null);
+						crudEmpleadoViewController.guardarArchivoLog("El empleado ya existe", 1, "YaExisteEmpleado");
+					}
 					initDataBindings();
-					crudEmpleadoViewController.salvarDatos();
-					crudEmpleadoViewController.guardaTextoPlano();
-					crudEmpleadoViewController.guardarArchivoLog("Se hizo una modificación en el empleado: "+ empleadoSeleccionado.getNombreEmpleado()
-					, 1, "ModificaciónEmpleado");
+					
 				}
 			}
 		});

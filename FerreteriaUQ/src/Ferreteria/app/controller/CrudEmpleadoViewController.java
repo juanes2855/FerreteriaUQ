@@ -31,8 +31,8 @@ public class CrudEmpleadoViewController implements IControlCrudEmpleadoView {
 
 	@Override
 	public void actualizarEmpleado(String nombreEmpleado, String cargo, int codigoEmpleado, String direccion,
-			double salario) {
-		modelFactoryController.actualizarEmpleado(salario, cargo, direccion, codigoEmpleado, nombreEmpleado);
+			double salario, int codigoAnterior) throws yaExiste {
+		modelFactoryController.actualizarEmpleado(salario, cargo, direccion, codigoEmpleado, nombreEmpleado, codigoAnterior);
 
 	}
 
@@ -56,6 +56,10 @@ public class CrudEmpleadoViewController implements IControlCrudEmpleadoView {
 
 	public void guardaTextoPlano() {
 		modelFactoryController.guardardatos();
+	}
+
+	public boolean consultarSiExiste(Empleado empleadoSeleccionado) {
+		return modelFactoryController.consultarSiExite(empleadoSeleccionado);
 	}
 
 }

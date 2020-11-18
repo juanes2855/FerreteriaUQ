@@ -24,7 +24,6 @@ public class FerreteriaAplicacion {
 
 					public void run() {
 						try {
-
 							// close();
 							InicioSesion inicioSesion= new InicioSesion();
 							inicioSesion.open();

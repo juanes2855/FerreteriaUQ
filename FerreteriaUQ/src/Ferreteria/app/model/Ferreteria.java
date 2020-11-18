@@ -60,17 +60,22 @@ public class Ferreteria implements Serializable, IFerreteria {
 	}
     @Override
 	public void actualizarEmpleado(String nombreEmpleado, String cargo, int codigoEmpleado, String direccion,
-			double salario) {
+			double salario, int codigoEmpleadoAnterior) throws yaExiste {
 
-		Empleado empleado = obtenerEmpleado(codigoEmpleado);
-		if (empleado != null) {
+		Empleado empleado = obtenerEmpleado(codigoEmpleadoAnterior);
+		Empleado empleadoExistente = obtenerEmpleado(codigoEmpleado);
+		if (empleado != null && empleadoExistente==null) {
+			
 			empleado.setCargo(cargo);
 			empleado.setCodigoEmpleado(codigoEmpleado);
 			empleado.setDireccion(direccion);
 			empleado.setNombreEmpleado(nombreEmpleado);
 			empleado.setSalario(salario);
 
+		}else if(empleadoExistente != null){
+			throw new yaExiste("Ya existe el empleado");
 		}
+		
 
 	}
 
@@ -125,16 +130,19 @@ public class Ferreteria implements Serializable, IFerreteria {
 
 	@Override
 	public void modificarProducto(String nombreProducto, int codigoProducto, double precio, String categoria,
-			Proveedor proveedor) {
+			Proveedor proveedor, int codigoAnterior) throws yaExiste {
 
-		Producto producto = obtenerProducto(codigoProducto);
-		if (producto != null) {
+		Producto producto = obtenerProducto(codigoAnterior);
+		Producto productoExistente = obtenerProducto(codigoProducto);
+		if (producto != null && productoExistente==null) {
 
 			producto.setCategoria(categoria);
 			producto.setProveedorAsociado(proveedor);
 			producto.setCodigoProducto(codigoProducto);
 			producto.setNombreProducto(nombreProducto);
 			producto.setPrecio(precio);
+		}else if(productoExistente !=null){
+			throw new yaExiste("Ya existe el producto");
 		}
 
 	}
@@ -165,15 +173,17 @@ public class Ferreteria implements Serializable, IFerreteria {
 
 	@Override
 	public void modificarProveedor(String nombreProveedor, int codigoProveedor, int telefonoProveedor,
-			String direccionProveedor) {
+			String direccionProveedor, int codigoAnterior) throws yaExiste {
 
-		Proveedor proveedor = obtenerProveedor(codigoProveedor);
-
-		if (proveedor != null) {
+		Proveedor proveedor = obtenerProveedor(codigoAnterior);
+		Proveedor proveedorExistente = obtenerProveedor(codigoProveedor);
+		if (proveedor != null && proveedorExistente ==null) {
 			proveedor.setCodigoProveedor(codigoProveedor);
 			proveedor.setDireccionProveedor(direccionProveedor);
 			proveedor.setNombreProveedor(nombreProveedor);
 			proveedor.setTelefonoProveedor(telefonoProveedor);
+		}else if(proveedorExistente != null){
+			throw new yaExiste("Ya existe el proveedor");
 		}
 
 	}
@@ -202,9 +212,22 @@ public class Ferreteria implements Serializable, IFerreteria {
 		}
 		return proveedorE;
 	}
+	public Boolean consultarPerteneceAtransaccion(Object object){
+		Boolean consulta=false;
+		
+		for (Compra compra : listaCompras) {
+			if(compra.getEmpleadoAsociado().equals(object) || compra.getProveedorAsociado().equals(object)|| 
+					compra.getEmpleadoAsociado().equals(object)){
+				consulta=true;
+				break;
+			}
+		}
+		
+		return consulta;
+	}
 	@Override
 	public void modificarCompra(int codigoCompra, String fechaCompra, int cantidadCompra,
-			Factura_Compra facturaCompra) {
+			Factura_Compra facturaCompra)throws yaExiste {
 	
 	  Compra compra = obtenerCompra(codigoCompra);
 	  

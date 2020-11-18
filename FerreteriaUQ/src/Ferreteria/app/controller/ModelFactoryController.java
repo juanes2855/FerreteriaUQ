@@ -22,8 +22,16 @@ import Ferreteria.app.model.Usuario;
 import Ferreteria.app.view.InicioSesion;
 
 
-public class ModelFactoryController {
+
+public class ModelFactoryController implements Runnable {
 	Ferreteria ferreteria;
+	Thread hiloGuardarXml;
+	Thread hiloGuardarLog;
+	Thread hiloguardarArchivos;
+	Control control = new Control(1);
+	String mensajeLog="";
+	int nivel=0; 
+	String accion="";
 
 	private static class SingletonHolder {
 		private final static ModelFactoryController eINSTANCE = new ModelFactoryController();
@@ -78,16 +86,13 @@ public class ModelFactoryController {
 	}
 	
 	public void guardardatos(){
-		
-		try{
-			Persistencia.guardarEmpleadox(getFerreteria().getListaEmpleados());
-			Persistencia.guardarProducto(getFerreteria().getListaProductos());
-			Persistencia.guardarProveedores(getFerreteria().getListaProveedor());
-			Persistencia.guardarCompra(getFerreteria().getListaCompras());
-		}catch(IOException e){
-			System.out.println(e);
-		}
-		
+			hiloguardarArchivos= new Thread(this);
+			hiloguardarArchivos.start();
+			
+//			Persistencia.guardarEmpleadox(getFerreteria().getListaEmpleados());
+//			Persistencia.guardarProducto(getFerreteria().getListaProductos());
+//			Persistencia.guardarProveedores(getFerreteria().getListaProveedor());
+//			Persistencia.guardarCompra(getFerreteria().getListaCompras());
 		
 	}
 	public void cargarDatosDesdeArchivo() {
@@ -113,8 +118,8 @@ public class ModelFactoryController {
 	}
 
 	public void actualizarEmpleado(double salario, String cargo, String direccion, int codigoEmpleado,
-			String nombreEmpleado) {
-		getFerreteria().actualizarEmpleado(nombreEmpleado, cargo, codigoEmpleado, direccion, salario);
+			String nombreEmpleado, int codigoAnterior)throws yaExiste {
+		getFerreteria().actualizarEmpleado(nombreEmpleado, cargo, codigoEmpleado, direccion, salario, codigoAnterior);
 
 	}
 
@@ -133,8 +138,8 @@ public class ModelFactoryController {
 	}
 
 	public void actualizarProducto(String nombreProducto, int codigoProducto, double precio, String categoria,
-			Proveedor proveedor) {
-		getFerreteria().modificarProducto(nombreProducto, codigoProducto, precio, categoria, proveedor);
+			Proveedor proveedor, int codigoAnterior ) throws yaExiste{
+		getFerreteria().modificarProducto(nombreProducto, codigoProducto, precio, categoria, proveedor, codigoAnterior);
 
 	}
 
@@ -147,8 +152,8 @@ public class ModelFactoryController {
 	}
 
 	public void actualizarProveedor(String nombreProveedor, int codigoProveedor, int telefonoProveedor,
-			String direccionProveedor) {
-		getFerreteria().modificarProveedor(nombreProveedor, codigoProveedor, telefonoProveedor, direccionProveedor);
+			String direccionProveedor, int codigoAnterior) throws yaExiste {
+		getFerreteria().modificarProveedor(nombreProveedor, codigoProveedor, telefonoProveedor, direccionProveedor, codigoAnterior);
 	}
 
 	public Boolean eliminarProveedor(int codigoProveedor) {
@@ -168,7 +173,7 @@ public class ModelFactoryController {
 	}
 
 	public void modificarCompra(int codigoCompra, String fechaCompra, int cantidadCompra,
-			Factura_Compra facturaCompra) {
+			Factura_Compra facturaCompra)throws yaExiste {
 		getFerreteria().modificarCompra(codigoCompra, fechaCompra, cantidadCompra, facturaCompra);
 	}
 
@@ -219,7 +224,9 @@ public class ModelFactoryController {
     }
     
     public void guardarResourceXML(){
-    	Persistencia.guardarRecursoFerreteriaXML(ferreteria);
+    	hiloGuardarXml= new Thread(this);
+    	hiloGuardarXml.start();
+    	//Persistencia.guardarRecursoFerreteriaXML(ferreteria);
     }
 
     public void salvarDatos() {
@@ -228,7 +235,12 @@ public class ModelFactoryController {
     }
     
     public void guardarLog(String mensajeLog, int nivel, String accion){
-    	Persistencia.guardaRegistroLog(mensajeLog, nivel, accion);
+    	this.accion=accion;
+    	this.mensajeLog=mensajeLog;
+    	this.nivel=nivel;
+    	hiloGuardarLog= new Thread(this);
+    	hiloGuardarLog.start();
+    	//Persistencia.guardaRegistroLog(mensajeLog, nivel, accion);
     }
 
 	public void guardarRespaldoBinario() {
@@ -237,7 +249,59 @@ public class ModelFactoryController {
 	public void guardarRespaldoCompras() throws IOException{
 		Persistencia.respaldoCompra(getFerreteria().getListaCompras());
 	}
-	
-    
 
+	public boolean consultarSiExite(Object object) {
+		return getFerreteria().consultarPerteneceAtransaccion(object);
+	}
+	
+
+	@Override
+	public void run() {
+	
+		Thread hiloEjecucion= Thread.currentThread();
+		try {
+			control.ocupar();
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+		
+		if(hiloEjecucion== hiloGuardarXml){
+			Persistencia.guardarRecursoFerreteriaXML(ferreteria);
+			try {
+				control.liberar();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		if(hiloEjecucion== hiloGuardarLog){
+			Persistencia.guardaRegistroLog(mensajeLog, nivel, accion);
+			try {
+				control.liberar();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		if(hiloEjecucion== hiloguardarArchivos){
+			try{
+			Persistencia.guardarEmpleadox(getFerreteria().getListaEmpleados());
+			Persistencia.guardarProducto(getFerreteria().getListaProductos());
+			Persistencia.guardarProveedores(getFerreteria().getListaProveedor());
+			Persistencia.guardarCompra(getFerreteria().getListaCompras());
+			try {
+				control.liberar();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			}catch (IOException e) {
+				System.out.println("falla aqui");
+			}
+		}
+	}
+	
+   
 }
