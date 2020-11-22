@@ -1,6 +1,7 @@
 package Ferreteria.app.Persistencia;
 
 import java.beans.XMLEncoder;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -371,4 +372,71 @@ public class Persistencia {
 		ArchivoUtil.guardarArchivo(ruta, contenido, false);
 	}
 
+
+	public static void generarReporte(int reporte, String usuario, Ferreteria ferreteria, String seleccion) throws IOException {
+		String fecha=ArchivoUtil.cargarFechaSistema3();
+		if(reporte==1){
+			String ruta=seleccion+"/reporteEmpleado"+fecha+"_.txt";
+	           String contenido="";
+	           contenido+="   Reporte de listado de empleados    "+"\n";
+	           contenido+="           Fecha: "+fecha+"   "+"\n";
+	           contenido+="   Reporte realizado por: "+usuario+"    "+"\n"+"\n";
+	           contenido+="Información del reporte: "+"\n";
+	           
+	           for (Empleado empleado : ferreteria.getListaEmpleados()) {
+	   			contenido += "|" + empleado.getNombreEmpleado() + "   |   " + empleado.getCodigoEmpleado() + "   |   "
+	   					+ empleado.getDireccion() + "   |   " + empleado.getCargo() + "   |   " + empleado.getSalario() + "|"
+	   					+ "\n";
+	   		}
+	        ArchivoUtil.guardarArchivo(ruta, contenido, true);   
+		}
+		if(reporte==2){
+			String ruta=seleccion+"/reporteProducto"+fecha+"_.txt";
+			String contenido="";
+	           contenido+="   Reporte de listado de Productos    "+"\n";
+	           contenido+="           Fecha: "+fecha+"   "+"\n";
+	           contenido+="   Reporte realizado por: "+usuario+"    "+"\n"+"\n";
+	           contenido+="Información del reporte: "+"\n";
+	           
+	           for (Producto producto : ferreteria.getListaProductos()) {
+	   			contenido += "|" + producto.getNombreProducto() + "   |   " + producto.getCodigoProducto() + "   |   "
+	   					+ producto.getPrecio() + "   |   " + producto.getCategoria() + "   |   "
+	   					+ producto.getProveedorAsociado().getNombreProveedor() + "|" + "\n";
+	   		}
+	           ArchivoUtil.guardarArchivo(ruta, contenido, true);   
+	           
+		}
+		if(reporte==3){
+			String ruta=seleccion+"/reporteProveedores"+fecha+"_.txt";
+			String contenido="";
+	           contenido+="   Reporte de listado de Proveedores    "+"\n";
+	           contenido+="           Fecha: "+fecha+"   "+"\n";
+	           contenido+="   Reporte realizado por: "+usuario+"    "+"\n"+"\n";
+	           contenido+="Información del reporte: "+"\n";
+	           for (Proveedor proveedor : ferreteria.getListaProveedor()) {
+	   			contenido += "|" + proveedor.getNombreProveedor() + "   |   " + proveedor.getCodigoProveedor() + "   |   "
+	   					+ proveedor.getDireccionProveedor() + "   |   "+ proveedor.getTelefonoProveedor() + "|" + "\n";
+	   		}
+	           
+	           ArchivoUtil.guardarArchivo(ruta, contenido, true); 
+		}
+		if(reporte==4){
+			String ruta=seleccion+"/reporteCompras"+fecha+"_.txt";
+			String contenido="";
+	           contenido+="   Reporte de listado de Compras    "+"\n";
+	           contenido+="           Fecha: "+fecha+"   "+"\n";
+	           contenido+="   Reporte realizado por: "+usuario+"    "+"\n"+"\n";
+	           contenido+="Información del reporte: "+"\n";
+	           contenido+= "|   Cantidad    |    código   |    fecha       |   Empleado   |   Proveedor  |    Total   |"+"\n";
+	           for (Compra compra : ferreteria.getListaCompras()) {
+	   			contenido += "|       " + compra.getCantidadCompra() + "       |      " + compra.getCodigoCompra() + "      |   "
+	   					+ compra.getFechaCompra() + "   |   " + compra.getEmpleadoAsociado().getNombreEmpleado() + "   |   "
+	   					+ compra.getProveedorAsociado().getNombreProveedor() + "   |   " +compra.getFactura_Compra().getTotalCompra()+"|"+"\n";
+	   		}
+	           
+	           ArchivoUtil.guardarArchivo(ruta, contenido, true); 
+		}
+	}
+
+	
 }

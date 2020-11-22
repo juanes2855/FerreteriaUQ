@@ -1,5 +1,8 @@
 package Ferreteria.app.view;
 
+import java.io.IOException;
+
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import org.eclipse.core.databinding.DataBindingContext;
@@ -235,7 +238,7 @@ public class ProveedorView extends Composite {
 				}
 			}
 		});
-		btnAgregarProveedor.setBounds(474, 497, 202, 35);
+		btnAgregarProveedor.setBounds(518, 530, 202, 35);
 		btnAgregarProveedor.setText("Agregar Proveedor");
 
 		Button btnModificarProveedor = new Button(this, SWT.NONE);
@@ -268,7 +271,7 @@ public class ProveedorView extends Composite {
 				}
 			}
 		});
-		btnModificarProveedor.setBounds(693, 497, 202, 35);
+		btnModificarProveedor.setBounds(726, 530, 202, 35);
 		btnModificarProveedor.setText("Modificar Proveedor");
 		text_busqueda = new Text(grpAcciones, SWT.BORDER);
 		text_busqueda.setBounds(111, 38, 223, 31);
@@ -298,6 +301,30 @@ public class ProveedorView extends Composite {
 		});
 		btnConsultar.setBounds(340, 37, 180, 32);
 		btnConsultar.setText("Consultar");
+		
+		Button btnReporte = new Button(this, SWT.NONE);
+		btnReporte.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				JFileChooser f = new JFileChooser();
+		           f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); 
+		           f.showSaveDialog(null);
+                String seleccion=f.getSelectedFile().toString();
+		           int proveedor=3;
+		           
+		           try{
+		        	   crudProveedorViewController.guardaReporte(proveedor, seleccion);
+		        	   JOptionPane.showMessageDialog(null, "Reporte generado con exito");
+		        	   crudProveedorViewController.guardarArchivoLog("Se ha generado un reporte de proveedores", 1, "ReporteProveedor");
+		        	   
+		           }catch (IOException e1) {
+				        crudProveedorViewController.guardarArchivoLog("El reporte ha fallado de proveedores", 2, "ReporteFallido");
+				        JOptionPane.showMessageDialog(null, "Reporte generado falló");
+				}
+			}
+		});
+		btnReporte.setBounds(518, 482, 202, 35);
+		btnReporte.setText("Reporte");
 
 		text_busqueda.addModifyListener(new ModifyListener() {
 

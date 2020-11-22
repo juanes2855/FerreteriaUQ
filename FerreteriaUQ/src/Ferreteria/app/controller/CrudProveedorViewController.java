@@ -1,5 +1,7 @@
 package Ferreteria.app.controller;
 
+import java.io.IOException;
+
 import Ferreteria.app.Excepciones.yaExiste;
 import Ferreteria.app.model.Ferreteria;
 import Ferreteria.app.model.Proveedor;
@@ -63,6 +65,11 @@ public class CrudProveedorViewController {
 
 	public boolean consultarSiExiste(Proveedor proveedorSeleccionado) {
 		return modelFactoryController.consultarSiExite(proveedorSeleccionado);
+	}
+
+	public void guardaReporte(int proveedor, String seleccion) throws IOException {
+		modelFactoryController.generarReporte(proveedor, seleccion);
+		
 	}
 
 }

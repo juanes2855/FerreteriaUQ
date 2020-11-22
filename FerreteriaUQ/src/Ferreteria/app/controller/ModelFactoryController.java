@@ -1,5 +1,6 @@
 package Ferreteria.app.controller;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -32,6 +33,7 @@ public class ModelFactoryController implements Runnable {
 	String mensajeLog="";
 	int nivel=0; 
 	String accion="";
+	String usuario;
 
 	private static class SingletonHolder {
 		private final static ModelFactoryController eINSTANCE = new ModelFactoryController();
@@ -204,6 +206,7 @@ public class ModelFactoryController implements Runnable {
 		
 	}
     private boolean validarUsuario(String usuario, String contrasenia) throws FileNotFoundException, IOException{
+    	this.usuario=usuario;
     	return Persistencia.validarUsuario(usuario, contrasenia);
     }
     
@@ -301,6 +304,11 @@ public class ModelFactoryController implements Runnable {
 				System.out.println("falla aqui");
 			}
 		}
+	}
+
+	public void generarReporte(int reporte, String seleccion) throws IOException {
+		Persistencia.generarReporte(reporte, usuario, getFerreteria(), seleccion);
+		
 	}
 	
    

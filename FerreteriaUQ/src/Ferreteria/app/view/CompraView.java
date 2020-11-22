@@ -1,5 +1,8 @@
 package Ferreteria.app.view;
 
+import java.io.IOException;
+
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import org.eclipse.core.databinding.DataBindingContext;
@@ -397,6 +400,29 @@ public class CompraView extends Composite {
 		});
 		buttonQuitar.setBounds(397, 385, 105, 35);
 		buttonQuitar.setText("<<");
+		
+		Button btnReporte = new Button(this, SWT.NONE);
+		btnReporte.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				JFileChooser f = new JFileChooser();
+		           f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); 
+		           f.showSaveDialog(null);
+                String seleccion=f.getSelectedFile().toString();
+		           int compra=4;
+		           
+		           try{
+		        	   crudCompraViewController.guardarReporte(compra, seleccion);
+		        	   JOptionPane.showMessageDialog(null, "Reporte generado con exito");
+		        	   crudCompraViewController.guardarArchivoLog("Se ha generado un reporte de compras", 1, "ReporteCompras");
+		           }catch (IOException e1) {
+		        	   crudCompraViewController.guardarArchivoLog("El reporte ha fallado de compras", 2, "ReporteFallido");
+		        	   JOptionPane.showMessageDialog(null, "Reporte generado falló");
+				}
+			}
+		});
+		btnReporte.setBounds(124, 385, 105, 35);
+		btnReporte.setText("Reporte");
 		dataBindingContext = initDataBindings();
 
 	}

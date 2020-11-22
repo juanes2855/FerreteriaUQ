@@ -1,5 +1,8 @@
 package Ferreteria.app.view;
 
+import java.io.IOException;
+
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import org.eclipse.core.databinding.DataBindingContext;
@@ -336,7 +339,7 @@ public class ProductoView extends Composite {
 				}
 			}
 		});
-		btnAgregarProducto.setBounds(444, 144, 166, 35);
+		btnAgregarProducto.setBounds(556, 144, 166, 35);
 		btnAgregarProducto.setText("Agregar Producto");
 
 		Button btnActualizarProducto = new Button(grpDetalles, SWT.NONE);
@@ -370,8 +373,31 @@ public class ProductoView extends Composite {
 				}
 			}
 		});
-		btnActualizarProducto.setBounds(629, 144, 166, 35);
+		btnActualizarProducto.setBounds(728, 144, 166, 35);
 		btnActualizarProducto.setText("Actualizar Producto");
+		
+		Button btnReporte = new Button(grpDetalles, SWT.NONE);
+		btnReporte.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				JFileChooser f = new JFileChooser();
+		           f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); 
+		           f.showSaveDialog(null);
+                String seleccion=f.getSelectedFile().toString();
+		           int producto=2;
+		           
+		           try{
+		        	   crudProductoViewController.guardarReporte(producto, seleccion);
+		        	   JOptionPane.showMessageDialog(null, "Reporte generado con exito");
+		        	   crudProductoViewController.guardarArchivoLog("Se ha generado un reporte de Productos", 1, "ReporteProducto");
+		           }catch(IOException e1){
+		        	   crudProductoViewController.guardarArchivoLog("El reporte ha fallado de productos", 2, "ReporteFallido");
+		        	   JOptionPane.showMessageDialog(null, "Reporte generado falló");
+		           }
+			}
+		});
+		btnReporte.setBounds(377, 144, 166, 35);
+		btnReporte.setText("Reporte");
 
 	}
 

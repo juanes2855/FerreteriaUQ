@@ -1,5 +1,8 @@
 package Ferreteria.app.controller;
 
+import java.io.File;
+import java.io.IOException;
+
 import Ferreteria.app.Excepciones.yaExiste;
 import Ferreteria.app.model.Empleado;
 import Ferreteria.app.model.Ferreteria;
@@ -60,6 +63,11 @@ public class CrudEmpleadoViewController implements IControlCrudEmpleadoView {
 
 	public boolean consultarSiExiste(Empleado empleadoSeleccionado) {
 		return modelFactoryController.consultarSiExite(empleadoSeleccionado);
+	}
+
+	public void guardarReporte(int reporte, String seleccion) throws IOException {
+		modelFactoryController.generarReporte(reporte, seleccion);
+		
 	}
 
 }

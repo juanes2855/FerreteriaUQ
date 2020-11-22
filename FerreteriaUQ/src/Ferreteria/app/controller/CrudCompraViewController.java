@@ -1,5 +1,7 @@
 package Ferreteria.app.controller;
 
+import java.io.IOException;
+
 import Ferreteria.app.Excepciones.soloUnProveedor;
 import Ferreteria.app.Excepciones.yaExiste;
 import Ferreteria.app.model.Compra;
@@ -71,6 +73,10 @@ public class CrudCompraViewController {
 	public void guardarTextPlano() {
 		modelFactoryController.guardardatos();
 		
+	}
+
+	public void guardarReporte(int compra, String seleccion) throws IOException {
+	   modelFactoryController.generarReporte(compra, seleccion);
 	}
 	
 }

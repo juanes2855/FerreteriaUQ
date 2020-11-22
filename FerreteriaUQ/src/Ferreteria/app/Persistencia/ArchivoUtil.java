@@ -149,6 +149,7 @@ public class ArchivoUtil {
 		// horaFechaSistema = hora+"-"+minuto;
 	}
 
+	
 	public static String cargarFechaSistema2() {
 
 		String diaN = "";
@@ -199,6 +200,47 @@ public class ArchivoUtil {
 		}
 
 		return fechaSistema = diaN + mesN + añoN + "_" + horaN + "_" + minutoN + "_" + segundoN;
+
+	}
+	public static String cargarFechaSistema3() {
+
+		String diaN = "";
+		String mesN = "";
+		String añoN = "";
+		String segundoN= "";
+		
+
+		
+		Calendar cal1 = Calendar.getInstance();
+
+		int dia = cal1.get(Calendar.DATE);
+		int mes = cal1.get(Calendar.MONTH) + 1;
+		int año = cal1.get(Calendar.YEAR);
+		int segundo = cal1.get(Calendar.SECOND);
+
+
+		if (dia < 10) {
+			diaN += "0" + dia;
+		} else {
+			diaN += "" + dia;
+		}
+		if (mes < 10) {
+			mesN += "0" + mes;
+		} else {
+			mesN += "" + mes;
+		}
+		if(año<10){
+			añoN += "0"+año;
+		}else{
+			añoN+= ""+año;
+		}
+		if(segundo<10){
+			segundoN += "0"+segundo;
+		}else{
+			segundoN+= ""+segundo;
+		}
+		
+		return fechaSistema = diaN +","+ mesN +","+ añoN+","+segundoN;
 
 	}
 

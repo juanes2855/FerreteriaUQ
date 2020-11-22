@@ -1,5 +1,8 @@
 package Ferreteria.app.view;
 
+import java.io.IOException;
+
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import org.eclipse.core.databinding.DataBindingContext;
@@ -34,6 +37,7 @@ import Ferreteria.app.Excepciones.EstaVinculado;
 import Ferreteria.app.Excepciones.nadaSeleccionado;
 import Ferreteria.app.Excepciones.numeroErroneo;
 import Ferreteria.app.Excepciones.yaExiste;
+import Ferreteria.app.Persistencia.ArchivoUtil;
 import Ferreteria.app.controller.CrudEmpleadoViewController;
 import Ferreteria.app.model.Ferreteria;
 import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
@@ -338,7 +342,7 @@ public class EmpleadoView extends Composite {
 
 			}
 		});
-		btnAgregarEmpleado.setBounds(441, 144, 161, 35);
+		btnAgregarEmpleado.setBounds(552, 144, 161, 35);
 		btnAgregarEmpleado.setText("Agregar Empleado");
 
 		Button btnActualizarEmpleado = new Button(grpDetalles, SWT.NONE);
@@ -369,8 +373,33 @@ public class EmpleadoView extends Composite {
 				}
 			}
 		});
-		btnActualizarEmpleado.setBounds(645, 144, 173, 35);
+		btnActualizarEmpleado.setBounds(735, 144, 173, 35);
 		btnActualizarEmpleado.setText("Actualizar Empleado");
+		
+		Button btnGenerarReporte = new Button(grpDetalles, SWT.NONE);
+		btnGenerarReporte.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				JFileChooser f = new JFileChooser();
+		           f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); 
+		           f.showSaveDialog(null);
+                   String seleccion=f.getSelectedFile().toString();
+		           int cliente=1;
+		           
+		           try {
+					crudEmpleadoViewController.guardarReporte(cliente, seleccion);
+					JOptionPane.showMessageDialog(null, "Reporte generado con exito");
+			        crudEmpleadoViewController.guardarArchivoLog("Se ha generado un reporte de empleados", 1, "ReporteEmpleados");
+				} catch (IOException e1) {
+					crudEmpleadoViewController.guardarArchivoLog("El reporte ha fallado de empleados", 2, "ReporteFallido");
+					JOptionPane.showMessageDialog(null, "Reporte generado falló");
+				}
+		           
+				
+			}
+		});
+		btnGenerarReporte.setBounds(361, 144, 161, 35);
+		btnGenerarReporte.setText("Reporte");
 		dataBindingContext = initDataBindings();
 		// TODO Auto-generated constructor stub
 
