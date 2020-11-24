@@ -34,7 +34,7 @@ public class Persistencia {
 	public static final String RUTA_ARCHIVO_USUARIOS = "C:/td/persistencia/archivos/archivoUsuario.txt";
 	public static final String RUTA_ARCHIVO_PRODUCTOS = "C:/td/persistencia/archivos/archivoProducto.txt";
 	public static final String RUTA_ARCHIVO_MODELO_FERRETERIA_BINARIO = "C:/td/persistencia/model.dat";
-	public static final String RUTA_ARCHIVO_MODELO_FERRETERIA_XML = "C:/td/persistencia/model.xml";
+	public static final String RUTA_ARCHIVO_MODELO_FERRETERIA_XML = "C:/td/server/model.xml";
 
 	public static void cargarDatosArchivos(Ferreteria ferreteria) throws FileNotFoundException, IOException {
 

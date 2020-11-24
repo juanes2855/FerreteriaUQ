@@ -1,9 +1,16 @@
 package Ferreteria.app.controller;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
 
 import Ferreteria.app.Excepciones.UsuarioExcepcion;
@@ -29,6 +36,25 @@ public class ModelFactoryController implements Runnable {
 	Thread hiloGuardarXml;
 	Thread hiloGuardarLog;
 	Thread hiloguardarArchivos;
+	
+	private Socket sockedComunicacion= null;
+	private Socket sockedTransferenciaObjeto = null;
+	private DataInputStream flujoEntradaComunicacion;
+	private DataOutputStream flujoSalidaComunicacion = null;
+	
+	private String idInstanciaCliente="";
+	byte[] receivedData;
+	int in;
+	BufferedInputStream flujoEntradaArchivo;
+	BufferedOutputStream  flujoSalidaArchivo;
+	
+	String filename= "";
+	String rutaArchivoLocal= "C:/td/server/";
+	ObjectInputStream flujoEntradaObjeto;
+	ObjectOutputStream flujosSalidaObjeto;
+	
+	
+	
 	Control control = new Control(1);
 	String mensajeLog="";
 	int nivel=0; 
@@ -44,15 +70,66 @@ public class ModelFactoryController implements Runnable {
 		return SingletonHolder.eINSTANCE;
 	}
 
-	public ModelFactoryController() {
-        
-	 // cargarDatosDesdeArchivo();
-      //cargarResourceBinario();
-      cargarResourceXML();
-        if(ferreteria== null){
-        	inicializarDatos();
-        }
-   
+//	public ModelFactoryController() {
+//        
+//	 // cargarDatosDesdeArchivo();
+//      //cargarResourceBinario();
+//      cargarResourceXML();
+//        if(ferreteria== null){
+//        	inicializarDatos();
+//        }
+//   
+//	}
+	
+	public ModelFactoryController(){
+		try {
+			crearConexion();
+			solicitarInformacionPersistencia();
+			leerObjetoPersistenciaTransferido();
+		}catch(Exception e){
+			System.out.println("Ha fallado el servidor");
+		}
+	}
+
+	private void leerObjetoPersistenciaTransferido() throws IOException, ClassNotFoundException {	
+		ferreteria= (Ferreteria) flujoEntradaObjeto.readObject();
+		System.out.println("Objeto Recibido");
+		flujoEntradaObjeto.close();
+	}
+
+	private void solicitarInformacionPersistencia() throws IOException {
+		flujoSalidaComunicacion.writeInt(1);
+		flujoSalidaComunicacion.close();
+		
+	}
+
+	private void crearConexion() throws IOException, Exception{
+	    
+		try{
+			sockedComunicacion= new Socket("localhost", 8081);
+			sockedTransferenciaObjeto= new Socket("localhost", 8082);
+			
+			flujoEntradaComunicacion = new DataInputStream(sockedComunicacion.getInputStream());
+			flujoSalidaComunicacion = new DataOutputStream(sockedComunicacion.getOutputStream());
+			
+			flujoEntradaObjeto=  new ObjectInputStream(sockedTransferenciaObjeto.getInputStream());
+			flujosSalidaObjeto=  new ObjectOutputStream(sockedTransferenciaObjeto.getOutputStream());
+			
+			System.out.println("Se conecto");
+		}catch (IOException e){
+			throw new Exception("\tError en el servidor");
+		}
+	
+}
+	private void solicitarGuardarPersistencia() throws IOException{
+		flujoSalidaComunicacion.writeInt(2);
+		flujoSalidaComunicacion.close();
+	}
+	
+	private void enviarObjetoPersistenciaTransferido() throws IOException, ClassNotFoundException{
+		flujosSalidaObjeto.writeObject(getFerreteria());
+		System.out.println("Objeto Enviado");
+		flujosSalidaObjeto.close();
 	}
 
 	private void inicializarDatos() {
@@ -90,11 +167,6 @@ public class ModelFactoryController implements Runnable {
 	public void guardardatos(){
 			hiloguardarArchivos= new Thread(this);
 			hiloguardarArchivos.start();
-			
-//			Persistencia.guardarEmpleadox(getFerreteria().getListaEmpleados());
-//			Persistencia.guardarProducto(getFerreteria().getListaProductos());
-//			Persistencia.guardarProveedores(getFerreteria().getListaProveedor());
-//			Persistencia.guardarCompra(getFerreteria().getListaCompras());
 		
 	}
 	public void cargarDatosDesdeArchivo() {
@@ -269,7 +341,24 @@ public class ModelFactoryController implements Runnable {
 		}
 		
 		if(hiloEjecucion== hiloGuardarXml){
-			Persistencia.guardarRecursoFerreteriaXML(ferreteria);
+//			Persistencia.guardarRecursoFerreteriaXML(ferreteria);
+//			try {
+//				control.liberar();
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+			try{
+				crearConexion();
+				solicitarGuardarPersistencia();
+				enviarObjetoPersistenciaTransferido();
+				
+			}catch(IOException e){
+				System.out.println("----");
+			}catch(Exception e1){
+				System.out.println("----1");
+			}
+			//Persistencia.guardarRecursoFerreteriaXML(ferreteria);
 			try {
 				control.liberar();
 			} catch (InterruptedException e) {
