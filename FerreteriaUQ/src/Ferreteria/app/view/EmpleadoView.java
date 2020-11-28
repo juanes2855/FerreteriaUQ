@@ -54,7 +54,7 @@ public class EmpleadoView extends Composite {
 
 	CrudEmpleadoViewController crudEmpleadoViewController = new CrudEmpleadoViewController();
 	Ferreteria ferreteria = crudEmpleadoViewController.getFerreteria();
-	ModelFactoryController model = new ModelFactoryController();
+	//ModelFactoryController model = new ModelFactoryController();
 
 	// Tamaño composite 938x587
 	private DataBindingContext dataBindingContext = null;
@@ -84,6 +84,7 @@ public class EmpleadoView extends Composite {
 			public void widgetSelected(SelectionEvent e) {
 
 				limpiarCampoTexto();
+				initDataBindings();
 
 			}
 		});

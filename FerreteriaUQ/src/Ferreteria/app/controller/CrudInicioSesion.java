@@ -1,13 +1,17 @@
 package Ferreteria.app.controller;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.Socket;
 
 import Ferreteria.app.Excepciones.UsuarioExcepcion;
 
 public class CrudInicioSesion {
 	
 	ModelFactoryController modelFactoryController;
+
 	
 	public CrudInicioSesion(){
 		modelFactoryController= ModelFactoryController.getInstance();
@@ -23,6 +27,8 @@ public class CrudInicioSesion {
 
 	public boolean iniciarSesion(String usuario, String contrasenia) throws FileNotFoundException, IOException, UsuarioExcepcion {
 		return modelFactoryController.iniciarSesion(usuario, contrasenia);
+	//return modelFactoryController.iniciarSession(usuario, contrasenia);
+		
 	}
 
 	public void escribirEnLog(int nivel, String string) {

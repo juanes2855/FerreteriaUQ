@@ -50,7 +50,7 @@ public class ProductoView extends Composite {
 	
 	CrudProductoViewController crudProductoViewController = new CrudProductoViewController();
 	Ferreteria ferreteria = crudProductoViewController.getFerreteria();
-	ModelFactoryController model = new ModelFactoryController();
+	//ModelFactoryController model = new ModelFactoryController();
 
 	private DataBindingContext dataBindingContext = null;
 	private Table table;
@@ -79,6 +79,7 @@ public class ProductoView extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				limpiarCampoTexto();
+				initDataBindings();
 			}
 		});
 		btnNuevoProducto.setBounds(523, 38, 167, 31);

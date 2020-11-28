@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import Ferreteria.app.Excepciones.UsuarioExcepcion;
@@ -39,6 +40,7 @@ public class ModelFactoryController implements Runnable {
 	
 	private Socket sockedComunicacion= null;
 	private Socket sockedTransferenciaObjeto = null;
+	private Socket socketInicio=null;
 	private DataInputStream flujoEntradaComunicacion;
 	private DataOutputStream flujoSalidaComunicacion = null;
 	
@@ -86,9 +88,43 @@ public class ModelFactoryController implements Runnable {
 			crearConexion();
 			solicitarInformacionPersistencia();
 			leerObjetoPersistenciaTransferido();
+			System.out.println("llamadoo");
 		}catch(Exception e){
 			System.out.println("Ha fallado el servidor");
 		}
+		
+	}
+	
+	public Boolean iniciarSession(String usuario, String contrasenia){
+		Boolean inicia=false;
+		
+		
+		try {
+			crearConexion2();
+			solicitarInicioDeSession(usuario, contrasenia);
+		  inicia=leerInicioSession();
+		 // inicia=true;
+		  if(inicia){
+			  try {
+					crearConexion();
+					solicitarInformacionPersistencia();
+					leerObjetoPersistenciaTransferido();
+					System.out.println("llamadoo");
+				}catch(Exception e){
+					System.out.println("Ha fallado el servidor aqui");
+				}
+		  }else{
+			  System.out.println("Dato erroneos");
+		  }
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		return inicia;
 	}
 
 	private void leerObjetoPersistenciaTransferido() throws IOException, ClassNotFoundException {	
@@ -96,11 +132,23 @@ public class ModelFactoryController implements Runnable {
 		System.out.println("Objeto Recibido");
 		flujoEntradaObjeto.close();
 	}
+	private Boolean leerInicioSession() throws IOException{
+		Boolean ya=false;
+		ya=flujoEntradaComunicacion.readBoolean();
+		flujoEntradaComunicacion.close();
+		return ya;
+	}	
 
 	private void solicitarInformacionPersistencia() throws IOException {
 		flujoSalidaComunicacion.writeInt(1);
 		flujoSalidaComunicacion.close();
 		
+	}
+	private void solicitarInicioDeSession(String usuario, String contrasenia) throws IOException{
+		flujoSalidaComunicacion.writeInt(3);
+//		flujoSalidaComunicacion.writeUTF("admin");
+//		flujoSalidaComunicacion.writeUTF("1234");
+		flujoSalidaComunicacion.close();
 	}
 
 	private void crearConexion() throws IOException, Exception{
@@ -121,6 +169,18 @@ public class ModelFactoryController implements Runnable {
 		}
 	
 }
+	
+	private void crearConexion2(){
+		try {
+			socketInicio= new Socket("localhost", 8081);
+			flujoEntradaComunicacion = new DataInputStream(socketInicio.getInputStream());
+			flujoSalidaComunicacion = new DataOutputStream(socketInicio.getOutputStream());
+		    System.out.println("Conexion2");
+		} catch (IOException e) {
+		 System.out.println("no se conecto en 2");
+			e.printStackTrace();
+		}
+	}
 	private void solicitarGuardarPersistencia() throws IOException{
 		flujoSalidaComunicacion.writeInt(2);
 		flujoSalidaComunicacion.close();
@@ -341,24 +401,17 @@ public class ModelFactoryController implements Runnable {
 		}
 		
 		if(hiloEjecucion== hiloGuardarXml){
-//			Persistencia.guardarRecursoFerreteriaXML(ferreteria);
-//			try {
-//				control.liberar();
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+
 			try{
 				crearConexion();
 				solicitarGuardarPersistencia();
 				enviarObjetoPersistenciaTransferido();
-				
+				//leerObjetoPersistenciaTransferido();
 			}catch(IOException e){
 				System.out.println("----");
 			}catch(Exception e1){
 				System.out.println("----1");
 			}
-			//Persistencia.guardarRecursoFerreteriaXML(ferreteria);
 			try {
 				control.liberar();
 			} catch (InterruptedException e) {
@@ -396,8 +449,7 @@ public class ModelFactoryController implements Runnable {
 	}
 
 	public void generarReporte(int reporte, String seleccion) throws IOException {
-		Persistencia.generarReporte(reporte, usuario, getFerreteria(), seleccion);
-		
+		Persistencia.generarReporte(reporte, usuario, getFerreteria(), seleccion);	
 	}
 	
    

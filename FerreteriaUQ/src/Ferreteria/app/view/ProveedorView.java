@@ -44,7 +44,7 @@ public class ProveedorView extends Composite {
 
 	CrudProveedorViewController crudProveedorViewController = new CrudProveedorViewController();
 	Ferreteria ferreteria = crudProveedorViewController.getFerreteria();
-	ModelFactoryController model = new ModelFactoryController();
+	//ModelFactoryController model = new ModelFactoryController();
 
 	private DataBindingContext dataBindingContext = null;
 	private Table table;
@@ -80,6 +80,7 @@ public class ProveedorView extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				limpiarCampoTexto();
+				initDataBindings();
 			}
 		});
 		btnNuevoProveedor.setBounds(530, 37, 180, 32);

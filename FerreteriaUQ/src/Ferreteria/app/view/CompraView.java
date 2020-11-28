@@ -52,7 +52,7 @@ public class CompraView extends Composite {
 	CrudCompraViewController crudCompraViewController = new CrudCompraViewController();
 	Ferreteria ferreteria = crudCompraViewController.getFerreteria();
 	Proveedor proveedor = crudCompraViewController.getFerreteria().getProveedor();
-	ModelFactoryController model = new ModelFactoryController();
+	//ModelFactoryController model = new ModelFactoryController();
 
 	private DataBindingContext dataBindingContext = null;
 	private Text textNumeroCompra;

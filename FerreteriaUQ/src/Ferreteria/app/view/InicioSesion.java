@@ -85,9 +85,9 @@ public class InicioSesion extends ApplicationWindow {
 					inicio = crudInicioSesion.iniciarSesion(usuario, contrasenia);
 					if(inicio){
 						crudInicioSesion.escribirEnLog("Inicio de Sesion del usuario: "+ usuario, 1, "InicioSesion");
-						crudInicioSesion.guardarRespaldoXml();
-						crudInicioSesion.guardarRespaldoBinario();
-						crudInicioSesion.guardarRespaldoCompras();
+//						crudInicioSesion.guardarRespaldoXml();
+//						crudInicioSesion.guardarRespaldoBinario();
+//						crudInicioSesion.guardarRespaldoCompras();
 						
 						
 						Display display = Display.getDefault();
@@ -115,7 +115,7 @@ public class InicioSesion extends ApplicationWindow {
 											Display.getCurrent().dispose();
 											crudInicioSesion.escribirEnLog("Cierre de sesión del usuario: "+usuario, 1, "CierreSesión");
 										}catch (Exception e){
-											System.out.println("Falla aqui "+ e);
+											System.out.println("Falla aqui ee "+ e);
 										}
 									}
 								});
